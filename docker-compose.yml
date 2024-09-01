@@ -1,0 +1,44 @@
+version: '3.8' # 실행시 참고할 도커 컴포즈 문서의 버전
+
+# services: 실행할 서비스들을 정의
+services:
+  app:
+    # container_name: app # 컨테이너 이름(유저 작명)
+    build:
+      context: . # Dockerfile이 있는 경로 (절대경로 또는 상대경로)  # 현재 디렉토리의
+      dockerfile: Dockerfile # 도커파일 빌드
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=35e7
+      - DATABASE_NAME=booklend
+    depends_on:
+      - db
+
+  # db: 데이터베이스(사용자 작명)
+  db:
+    image: postgres:15 # 가져올 이미지 이름 및 버전 지정
+    restart: always # 빌드 실행 시 자동 재시작
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 35e7
+      POSTGRES_DB: booklend
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - 6379:6379
+    # 스토리지 마운트(볼륨) 설정
+    volumes:
+      - ./redis/data:/data
+      - ./redis/conf/redis.conf:/usr/local/conf/redis.conf
+    restart: always

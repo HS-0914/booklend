@@ -7,15 +7,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'root',
-      password: '35e7',
-      database: 'booklend',
-      entities: [__dirname + '/domain/*.entity.{ts,js}'],
+      url: process.env.DATABASE_URL,
+      autoLoadEntities: true,
       synchronize: true,
     }),
-
   ],
   controllers: [AppController],
   providers: [AppService],

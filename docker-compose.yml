@@ -7,7 +7,7 @@ services:
     # container_name: app # 컨테이너 이름(유저 작명)
     container_name: nestjs-app
     ports:
-      - '8080:8080'
+      - '8000:8000'
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
@@ -44,6 +44,7 @@ services:
     container_name: redis-cache
     ports:
       - '6379:6379'
+    command: redis-server
     volumes:
       - redis_data:/data
 

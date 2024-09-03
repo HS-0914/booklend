@@ -8,8 +8,8 @@ export class UserController {
 
     @Post('/register')
     @UsePipes(ValidationPipe)
-    registerAccount(@Body() userDTO: UserDTO) {
-        return this.userService.registerUser(userDTO);
+    async registerAccount(@Body() userDTO: UserDTO): Promise<UserDTO> {
+        return await this.userService.registerUser(userDTO);
     }
     
 }

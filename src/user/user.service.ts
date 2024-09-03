@@ -14,6 +14,7 @@ export class UserService {
     ){}
 
     async registerUser(userDTO: UserDTO): Promise<UserDTO> {
+        // username or email 중복 걸러내기
         let userFind: UserDTO = await this.findByFields({
             where: [
                 { username: userDTO.username },

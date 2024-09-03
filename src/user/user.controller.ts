@@ -1,4 +1,5 @@
-import { Body, Controller, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Post, Res, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Response } from 'express';
 import { UserService } from './user.service';
 import { UserDTO } from './dto/user.dto';
 
@@ -12,4 +13,10 @@ export class UserController {
         return await this.userService.registerUser(userDTO);
     }
     
+    @Post('login')
+    async login(@Body() userDTO: UserDTO, @Res() res: Response): Promise<any> {
+        const jwt = await this.userService.validateUser(userDTO);
+        res.setHeader('Authorization', 'Bearer' + jwt.accessToken);
+        return res.json(jwt);
+    }
 }

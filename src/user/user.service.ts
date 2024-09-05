@@ -33,7 +33,7 @@ export class UserService {
         return await this.userRepository.save(newuserDTO);
     }
 
-    private async findByFields(options: FindOneOptions<UserDTO>): Promise<User | undefined> {
+    private async findByFields(options: FindOneOptions<User>): Promise<User | undefined> {
         return await this.userRepository.findOne(options);
     }
 
@@ -54,5 +54,11 @@ export class UserService {
 
         const payload: Payload = { id: userFind.id, username: userFind.username };
         return { accessToken: this.jwtService.sign(payload) };
+    }
+
+    async tokenValidateUser(payload:Payload): Promise<User | undefined> {
+        return await this.findByFields({
+            where: { id: payload.id }
+        });
     }
 }

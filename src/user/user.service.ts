@@ -5,16 +5,13 @@ import { FindOneOptions, Repository } from 'typeorm';
 import { UserDTO } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
 import { Payload } from './security/payload.interface';
-import { JwtService } from '@nestjs/jwt';
 
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
-        private jwtService: JwtService
-
+        private readonly userRepository: Repository<User>
     ){}
 
     async registerUser(newuserDTO: UserDTO): Promise<UserDTO> {
@@ -28,8 +25,7 @@ export class UserService {
         if(userFind) {
             throw new HttpException('Username or email aleady used!', HttpStatus.BAD_REQUEST);
         }
-        await this.transformPw(newuserDTO);
-        console.log(newuserDTO);
+        newuserDTO.password = await this.transformPw(newuserDTO.password);
         return await this.userRepository.save(newuserDTO);
     }
 
@@ -37,13 +33,12 @@ export class UserService {
         return await this.userRepository.findOne(options);
     }
 
-    private async transformPw(userDTO: UserDTO): Promise<void> {
-        userDTO.password = await bcrypt.hash(
-            userDTO.password, 10,
-        );
+    private async transformPw(transPw: string): Promise<string> {
+        transPw = await bcrypt.hash( transPw, 10 );
+        return transPw;
     }
 
-    async validateUser(userDTO: UserDTO): Promise<{ accessToken: string | undefined }> {
+    async validateUser(userDTO: UserDTO): Promise<Payload> {
         let userFind: User = await this.findByFields({
             where: { username: userDTO.username }
         });
@@ -53,7 +48,7 @@ export class UserService {
         }
 
         const payload: Payload = { id: userFind.id, username: userFind.username };
-        return { accessToken: this.jwtService.sign(payload) };
+        return payload;
     }
 
     async tokenValidateUser(payload:Payload): Promise<User | undefined> {
@@ -61,4 +56,20 @@ export class UserService {
             where: { id: payload.id }
         });
     }
+
+    async updateUser(userDTO: UserDTO) {
+        if ( userDTO.newPassword !== userDTO.checkNewPassword || userDTO.newPassword === userDTO.password ) {
+            throw new HttpException('newPw and checkPw do not match!', HttpStatus.BAD_REQUEST);
+        }
+        const validate = await this.validateUser(userDTO);
+        const updateResult = this.userRepository.update(
+            { id: validate.id },
+            { 
+                email: userDTO.email,
+                password: await this.transformPw(userDTO.newPassword)
+            }
+        );
+        return updateResult;
+    }
+
 }

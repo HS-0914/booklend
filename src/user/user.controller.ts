@@ -1,12 +1,14 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, Req, Res, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { UserService } from './user.service';
 import { UserDTO } from './dto/user.dto';
 import { UserGuard } from './security/user.guard';
+import { Payload } from './security/payload.interface';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('user')
 export class UserController {
-    constructor(private userService: UserService){}
+    constructor(private userService: UserService,  private jwtService: JwtService){}
 
     @Post('/register')
     @UsePipes(ValidationPipe)
@@ -15,38 +17,45 @@ export class UserController {
     }
     
     @Post('/login')
+    @UsePipes(ValidationPipe)
     async login(@Body() userDTO: UserDTO, @Res() res: Response): Promise<any> {
-        const jwt = await this.userService.validateUser(userDTO);
-        res.setHeader('Authorization', 'Bearer ' + jwt.accessToken);
-        res.cookie('jwt', jwt.accessToken, {
+        const jwt: Payload = await this.userService.validateUser(userDTO);
+        const accessToken = this.jwtService.sign(jwt)
+        res.setHeader('Authorization', 'Bearer ' + accessToken);
+        res.cookie('AuthToken', accessToken, {
             httpOnly: true,
             maxAge: 60 * 1000, // 1000 ms
         })
-        return res.send(jwt);
+        return res.json({ accessToken: accessToken });
     }
 
-    @Get('/auth-test')
+    @Get('/profile')
     @UseGuards(UserGuard)
-    isAuthenticated(@Req() req: Request): any { 
-        const user: any = req.user;
-        return user; 
+    getProfile(@Req() req: Request, @Res() res: Response): any {
+        return res.send(req.user);
     }
 
-
-    @Get('/cookies')
+    @Put('/profile')
     @UseGuards(UserGuard)
-    getCookies(@Req() req: Request, @Res() res: Response): any {
-        const jwt =  req.cookies['jwt'];
-        return res.send(jwt);
+    @UsePipes(ValidationPipe)
+    putProfile(@Body() userDTO: UserDTO) {
+        return this.userService.updateUser(userDTO);
     }
-
+ 
     @Post('/logout')
     logout(@Res() res: Response): any {
-        res.cookie('jwt', '', {
+        res.cookie('AuthToken', '', {
             maxAge: 0
         })
         return res.send({
             message: 'success'
         })
+    }
+
+    @Get('/cookie-test')
+    @UseGuards(UserGuard)
+    getCookies(@Req() req: Request, @Res() res: Response): any {
+        const jwt =  req.cookies['AuthToken'];
+        return res.send(jwt);
     }
 }

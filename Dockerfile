@@ -1,5 +1,5 @@
 # 베이스 이미지
-FROM node:20
+FROM node:20-alpine
 
 # 작업 디렉토리 생성
 WORKDIR /usr/src/app

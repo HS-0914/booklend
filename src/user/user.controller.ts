@@ -2,8 +2,8 @@ import { Body, Controller, Get, Post, Put, Req, Res, UseGuards, UsePipes, Valida
 import { Response, Request } from 'express';
 import { UserService } from './user.service';
 import { UserDTO } from './dto/user.dto';
-import { UserGuard } from './security/user.guard';
-import { Payload } from './security/payload.interface';
+import { UserGuard } from '../security/user.guard';
+import { Payload } from '../security/payload.interface';
 import { JwtService } from '@nestjs/jwt';
 
 @Controller('user')
@@ -24,7 +24,7 @@ export class UserController {
         res.setHeader('Authorization', 'Bearer ' + accessToken);
         res.cookie('AuthToken', accessToken, {
             httpOnly: true,
-            maxAge: 60 * 1000, // 1000 ms
+            maxAge: 3 * 60 * 1000, // 1000 ms
         })
         return res.json({ accessToken: accessToken });
     }
@@ -38,8 +38,8 @@ export class UserController {
     @Put('/profile')
     @UseGuards(UserGuard)
     @UsePipes(ValidationPipe)
-    putProfile(@Body() userDTO: UserDTO) {
-        return this.userService.updateUser(userDTO);
+    async putProfile(@Body() userDTO: UserDTO): Promise<any> {
+        return await this.userService.updateUser(userDTO);
     }
  
     @Post('/logout')

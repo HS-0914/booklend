@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CacheModule } from '@nestjs/cache-manager';
 import { UserModule } from './user/user.module';
+import { BookModule } from './book/book.module';
 import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
@@ -23,6 +24,7 @@ import * as redisStore from 'cache-manager-redis-store';
       isGlobal: true,
     }),
     UserModule,
+    BookModule,
   ],
   controllers: [AppController],
   providers: [AppService],

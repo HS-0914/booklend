@@ -24,7 +24,7 @@ services:
 
   # db: 데이터베이스(사용자 작명)
   db:
-    image: postgres:15
+    image: postgres:alpine
     # 빌드 실행 시 자동 재시작
     restart: always
     container_name: postgres-db
@@ -32,6 +32,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 3527
       POSTGRES_DB: booklend
+      TZ: Asia/Seoul # 대한민국 시간대 설정
     ports:
       - '5432:5432'
     volumes:
@@ -40,7 +41,7 @@ services:
       # 개발 환경에서는 바인드 마운트(Bind Mount)를 사용하여 코드와 데이터를 쉽게 접근하고 수정할 수 있도록 설정하는 것이 유리
 
   redis:
-    image: redis:latest
+    image: redis:alpine
     container_name: redis-cache
     ports:
       - '6379:6379'

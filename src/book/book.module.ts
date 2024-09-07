@@ -5,11 +5,11 @@ import { JwtStrategy } from '../security/passport.jwt.strategy';
 import { UserService } from '../user/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../domain/user.entity';
-import { PassportModule } from '@nestjs/passport';
+import { Book } from '../domain/book.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Book]),
     // PassportModule
   ],
   // exports: [TypeOrmModule],

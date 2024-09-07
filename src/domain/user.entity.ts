@@ -7,10 +7,8 @@ export class User extends Base {
     @Column()
     username: string;
     @Column()
-    password: string;
-    @Column()
     email: string;
-
-    //@OneToMany()
-    //role: number? any[]?
+    @Column()
+    password: string;
+    
 }

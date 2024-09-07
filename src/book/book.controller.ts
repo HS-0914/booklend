@@ -11,8 +11,7 @@ export class BookController {
     @Post('/add')
     @UseGuards(UserGuard)
     @UsePipes(ValidationPipe)
-    addBook(@Body() bookDTO: BookDTO, @Res() res: Response) {
-        const devvv = this.bookService;
-        return 'test';
+    async addBook(@Body() bookDTO: BookDTO): Promise<BookDTO> {
+        return await this.bookService.registerBook(bookDTO);
     }
 }

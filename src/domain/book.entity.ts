@@ -10,6 +10,8 @@ export class Book extends Base {
     author: string;
     @Column()
     isbn: string;
+    @Column()
+    publisher: string;
     @Column({ type: 'date' }) // yyyy-mm-dd 형식으로 저장
     published_date: Date;
     @Column()

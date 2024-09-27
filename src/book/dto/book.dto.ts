@@ -14,6 +14,10 @@ export class BookDTO {
     isbn: string;
 
     @IsNotEmpty()
+    @IsString()
+    publisher: string;
+
+    @IsNotEmpty()
     // @IsDate() 데코레이터는 날짜 형식을 지정하지 않음, 이 데코레이터는 단순히 값이 Date 객체인지 검사
     @IsISO8601()
     published_date: Date;

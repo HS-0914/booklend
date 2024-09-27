@@ -15,7 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             jwtFromRequest: ExtractJwt.fromExtractors([
                 (req: Request) => req?.cookies?.AuthToken,
             ]),
-            ignoreExpiration: false, // 만료 무시?
+            ignoreExpiration: true, // 만료 무시?
             secretOrKey: 'SECRET_KEY' // .env
         })
     }

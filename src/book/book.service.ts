@@ -39,8 +39,8 @@ export class BookService {
     }
 
     async findByType(type: string, keyword: string) {
-        console.log([type]);
-        let bookFind = await this.bookRepository.find({where: {[type]: keyword}});
+        let bookFind = await this.bookRepository.find({where: {[type]: Like(`%${keyword}%`)}});
+ 
         return bookFind;
     }
 }

@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CacheModule } from '@nestjs/cache-manager';
 import { UserModule } from './user/user.module';
 import { BookModule } from './book/book.module';
+import { LoanModule } from './loan/loan.module';
 import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
@@ -17,16 +18,17 @@ import * as redisStore from 'cache-manager-redis-store';
       synchronize: true,
     }),
     CacheModule.register({
-      store: redisStore, 
-      host: 'redis', 
-      port: 6379,
+      store: redisStore,
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
       ttl: 60,
       isGlobal: true,
     }),
     UserModule,
     BookModule,
+    LoanModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

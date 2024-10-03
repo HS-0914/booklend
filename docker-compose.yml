@@ -13,11 +13,11 @@ services:
       - /usr/src/app/node_modules
     command: npm run start:dev
 
-    environment: # 컨테이너 내에서 사용할 환경 변수를 정의
+    environment: # 컨테이너 내에서 사용할 환경 변수를 정의(processs.env)
       - DATABASE_URL=postgresql://postgres:3527@db:5432/booklend
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - CHOKIDAR_USEPOLLING=true
+      - CHOKIDAR_USEPOLLING=true # hotreload
     depends_on:
       - db
       - redis

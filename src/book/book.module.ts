@@ -10,11 +10,8 @@ import { Book } from '../domain/book.entity';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, Book]),
-    // PassportModule
   ],
-  // exports: [TypeOrmModule],
   controllers: [BookController],
   providers: [BookService, JwtStrategy, UserService]
 })
-export class BookModule {}
- 
+export class BookModule { }

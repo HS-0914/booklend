@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from 'src/domain/book.entity';
 import { Like, Repository } from 'typeorm';
@@ -27,7 +27,7 @@ export class BookService {
      * 전체 검색
      * @param keyword 
      */
-    async findAllType(keyword: string) {
+    async findAllType(keyword: string): Promise<Book[]> {
         const bookFind = await this.bookRepository.find({
             where: [
                 { title: Like(`%${keyword}%`) },
@@ -44,7 +44,7 @@ export class BookService {
      * @param type 
      * @param keyword 
      */
-    async findByType(type: string, keyword: string) {
+    async findByType(type: string, keyword: string): Promise<Book[]> {
         return await this.bookRepository.find({ where: { [type]: Like(`%${keyword}%`) } });
     }
 
@@ -52,9 +52,7 @@ export class BookService {
      * 상세 검색
      * @Param id
      */
-    async findByID(bookID: number) {
-        console.log(bookID, typeof (bookID));
-        // return await this.bookRepository.findOne({where: {id: bookID}});
+    async findByID(bookID: number): Promise<Book> {
         return await this.bookRepository.findOne({ where: { id: bookID } });
     }
 
@@ -63,7 +61,7 @@ export class BookService {
      * @param bookID 
      * @param bookDTO 
      */
-    async updateBook(bookID: number, bookDTO: BookDTO) {
+    async updateBook(bookID: number, bookDTO: BookDTO): Promise<any> {
         return await this.bookRepository.update({ id: bookID }, bookDTO);
     }
 
@@ -73,7 +71,7 @@ export class BookService {
      */
     async deleteByID(bookID: number): Promise<Book> {
         const entity = await this.bookRepository.findOne({ where: { id: bookID } })
-        if (!entity) throw new NotFoundException(`Can't found book. id: ${bookID} (๑•᎑<๑)ｰ☆`)
+        if (!entity) throw new HttpException(`Can't found book. id: ${bookID} (๑•᎑<๑)ｰ☆`, HttpStatus.NOT_FOUND);
         return this.bookRepository.remove(entity);
     }
 }

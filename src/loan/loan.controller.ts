@@ -10,8 +10,8 @@ export class LoanController {
   @Post()
   @UseGuards(UserGuard)
   loanBooks(@Req() req: Request, @Body() loanDTO: any){
-    console.log(typeof(req.user));
-    // return this.loanService.addLoan(req.user, 2);
+    console.log(req.user.id);
+    return' this.loanService.addLoan(req.user, 2)';
   }
 
 }

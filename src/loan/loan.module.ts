@@ -12,4 +12,4 @@ import { Book } from '../domain/book.entity';
   controllers: [LoanController],
   providers: [LoanService]
 })
-export class LoanModule {}
+export class LoanModule { }

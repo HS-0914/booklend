@@ -5,5 +5,5 @@ export class LoanDTO {
   @IsNotEmpty()
   @IsNumber()
   bookId: number;
-  
+
 }

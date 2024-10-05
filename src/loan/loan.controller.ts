@@ -7,29 +7,33 @@ import { Loan } from '../domain/loan.entity';
 
 @Controller('loan')
 export class LoanController {
-  constructor(private loanService:LoanService){};
-  
+  constructor(private loanService: LoanService) { };
+
+  // 도서 대출
   @Post()
   @UseGuards(UserGuard)
-  loanBooks(@Req() req: Request, @Body() loanDTO: LoanDTO): Promise<Loan> {
-    return this.loanService.addLoan(req.user.id, loanDTO.bookId);
+  async loanBooks(@Req() req: Request, @Body() loanDTO: LoanDTO): Promise<Loan> {
+    return await this.loanService.addLoan(req.user.id, loanDTO.bookId);
   }
 
+  // 대출 이력 검색
   @Get()
   @UseGuards(UserGuard)
   async getLoans(@Req() req: Request): Promise<Loan[]> {
     return await this.loanService.findLoans(req.user.id);
   }
 
+  // 대출 검색
   @Get('/:id')
   @UseGuards(UserGuard)
-  getOneLoan(@Param('id') id: number): Promise<Loan> {
-    return this.loanService.findOneLoan(id);
+  async getOneLoan(@Param('id') id: number): Promise<Loan> {
+    return await this.loanService.findOneLoan(id);
   }
 
+  // 도서 반납
   @Put('/:id')
   @UseGuards(UserGuard)
-  updateLoan(@Param('id') id: number): Promise<any> {
-    return this.loanService.updateLoan(id);
+  async updateLoan(@Param('id') id: number): Promise<any> {
+    return await this.loanService.updateLoan(id);
   }
 }

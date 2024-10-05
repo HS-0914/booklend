@@ -20,5 +20,6 @@ export class Loan extends Base {
   @JoinColumn({ name: 'user_id' })
   user: number;
   @ManyToOne(() => Book, (book) => book.id)
+  @JoinColumn({ name: 'user_id' })
   book: number;
 }

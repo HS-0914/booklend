@@ -50,7 +50,7 @@ export class BookService {
 
     /**
      * 상세 검색
-     * @Param id
+     * @param id
      */
     async findByID(bookID: number): Promise<Book> {
         return await this.bookRepository.findOne({ where: { id: bookID } });
@@ -58,7 +58,7 @@ export class BookService {
 
     /**
      * 책 수정
-     * @param bookID 
+     * @param id 
      * @param bookDTO 
      */
     async updateBook(bookID: number, bookDTO: BookDTO): Promise<any> {
@@ -67,7 +67,7 @@ export class BookService {
 
     /**
      * 책 삭제
-     * @param bookID 
+     * @param id 
      */
     async deleteByID(bookID: number): Promise<Book> {
         const entity = await this.bookRepository.findOne({ where: { id: bookID } })

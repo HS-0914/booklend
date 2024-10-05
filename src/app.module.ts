@@ -6,6 +6,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { UserModule } from './user/user.module';
 import { BookModule } from './book/book.module';
 import { LoanModule } from './loan/loan.module';
+import { ReservationModule } from './reservation/reservation.module';
 import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
@@ -27,6 +28,7 @@ import * as redisStore from 'cache-manager-redis-store';
     UserModule,
     BookModule,
     LoanModule,
+    ReservationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

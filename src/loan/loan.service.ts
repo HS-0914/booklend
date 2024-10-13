@@ -2,7 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from '../domain/book.entity';
 import { Loan } from '../domain/loan.entity';
-import { Repository, UpdateResult } from 'typeorm';
+import { Repository } from 'typeorm';
+import { User } from '../domain/user.entity';
 
 @Injectable()
 export class LoanService {
@@ -10,7 +11,7 @@ export class LoanService {
     @InjectRepository(Loan)
     private readonly loanRepository: Repository<Loan>,
     @InjectRepository(Book)
-    private readonly bookRepository: Repository<Book>
+    private readonly bookRepository: Repository<Book>,
   ) { }
 
   /**
@@ -24,8 +25,7 @@ export class LoanService {
     if (bookAvail.status !== 'available') throw new HttpException('The book is not available for loan! (๑•᎑<๑)ｰ☆', HttpStatus.CONFLICT);
     // 책 상태 변경 (대출가능 => 대출중)
     bookAvail.status = 'borrowed';
-    const update = await this.bookRepository.update({ id: bookAvail.id }, bookAvail);
-    if (!update.affected) throw new HttpException('update fail! (๑•᎑<๑)ｰ☆', HttpStatus.NOT_FOUND);
+    await this.bookRepository.update({ id: bookAvail.id }, bookAvail);
     // loan 데이터 추가
     const loan_date = new Date();
     const due_date = new Date();
@@ -33,8 +33,8 @@ export class LoanService {
     const loan = this.loanRepository.create({
       loan_date: loan_date,
       due_date: due_date,
-      user: userId,
-      book: bookId
+      user: {id:userId},
+      book: {id:bookId}
     })
     return await this.loanRepository.save(loan);
   }
@@ -44,15 +44,15 @@ export class LoanService {
    * @param user_id 
    */
   async findLoans(userId: number): Promise<Loan[]> {
-    return await this.loanRepository.find({ where: { user: userId }, loadRelationIds: true });
+    return await this.loanRepository.find({ where: { user: {id:userId} }, loadRelationIds: true });
   }
 
   /**
    * 대출 검색
    * @param id 
    */
-  async findOneLoan(id: number): Promise<Loan> {
-    return await this.loanRepository.findOne({ where: { id: id }, loadRelationIds: true });;
+  async findOneLoan(id: number, userId: number): Promise<Loan> {
+    return await this.loanRepository.findOne({ where: { id: id, user: { id: userId } }, loadRelationIds: true });;
   }
 
   /**
@@ -62,15 +62,13 @@ export class LoanService {
   async updateLoan(id: number) {
     const loan = await this.loanRepository.findOne({ where: { id: id } });
     const returnDate = new Date();
-    let result: UpdateResult;
     // 도서 연체 확인
     if (loan.due_date < returnDate) {
-      result = await this.loanRepository.update({ id: id }, { return_date: returnDate, status: 'overdue' });
+      await this.loanRepository.update({ id: id }, { return_date: returnDate, status: 'overdue' });
     } else {
-      result = await this.loanRepository.update({ id: id }, { return_date: returnDate, status: 'returned' });
+      await this.loanRepository.update({ id: id }, { return_date: returnDate, status: 'returned' });
     }
-    if (!result.affected) throw new HttpException('update fail! (๑•᎑<๑)ｰ☆', HttpStatus.NOT_FOUND);
-    const book = await this.bookRepository.findOne({ where: { id: loan.book } });
+    const book = await this.bookRepository.findOne({ where: { id: loan.book.id } });
     return await this.bookRepository.update({ id: book.id }, { status: 'available' });
   }
 }

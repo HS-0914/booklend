@@ -52,3 +52,5 @@ services:
 volumes:
   postgres_data:
   redis_data:
+
+# 도커 에러 - https://stackoverflow.com/questions/65272764/ports-are-not-available-listen-tcp-0-0-0-0-50070-bind-an-attempt-was-made-to

@@ -21,6 +21,7 @@ services:
     depends_on:
       - db
       - redis
+      - kafka
 
   # db: 데이터베이스(사용자 작명)
   db:
@@ -49,8 +50,44 @@ services:
     volumes:
       - redis_data:/data
 
+  kafka:
+    image: bitnami/kafka:latest
+    container_name: kafka
+    ports:
+      - '9092:9092'
+    volumes:
+      - "kafka_data:/data"
+    environment:
+      # kraft
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      # - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      # - ALLOW_PLAINTEXT_LISTENER=yes
+      # KAFKA_KRAFT_CLUSTER_ID not set - If using multiple nodes then you must use the same Cluster ID for each one
+      # Kafka has been configured with a PLAINTEXT listener, this setting is not recommended for production environments.
+
+
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - '8080:8080'
+    depends_on:
+      - kafka
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+      KAFKA_CLUSTERS_0_NAME: wizard_test
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+
 volumes:
   postgres_data:
   redis_data:
+  kafka_data:
 
 # 도커 에러 - https://stackoverflow.com/questions/65272764/ports-are-not-available-listen-tcp-0-0-0-0-50070-bind-an-attempt-was-made-to

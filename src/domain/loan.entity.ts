@@ -16,10 +16,10 @@ export class Loan extends Base {
   // (`on_loan`, `returned`, `overdue`)
   @Column({ default: 'on_loan' })
   status: string;
-  @ManyToOne(() => User, (user) => user.id, { eager: true })
+  @ManyToOne(() => User, (user) => user.id)
   @JoinColumn({ name: 'user_id' })
   user: User;
-  @ManyToOne(() => Book, (book) => book.id, { eager: true })
+  @ManyToOne(() => Book, (book) => book.id)
   @JoinColumn({ name: 'book_id' })
   book: Book;
 }

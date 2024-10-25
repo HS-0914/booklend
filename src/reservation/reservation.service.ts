@@ -84,11 +84,9 @@ export class KafkaService {
 
   async consumerCallback(payload: EachMessagePayload) {
     console.log('kafka message arrived (๑•᎑<๑)ｰ☆');
-    console.log(payload);
     console.log(
       `topic: ${payload.topic}, Msg: ${payload.message.value.toString()}, partition: ${payload.partition}, key: ${payload.message.key.toString()}`,
     );
-    console.log(`Msg: ${payload.message.value}`);
   }
 
   async addSubscriptionTopic(topic: string) {}

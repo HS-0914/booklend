@@ -28,14 +28,27 @@ export class LoanService {
     const bookAvail = await this.bookRepository.findOne({
       where: { id: bookId },
     });
-    if (bookAvail.status !== 'available')
+    // 예약자 확인
+    const resv = await this.reservRepository.findOne({
+      where: { book: { id: bookId }, status: 'pending' },
+      order: { created_at: 'ASC' },
+      relations: ['user'],
+    });
+    const isUnavailable = bookAvail.status === 'borrowed' || (resv && resv.user.id !== userId);
+    if (isUnavailable)
       throw new HttpException(
         'The book is not available for loan! (๑•᎑<๑)ｰ☆',
         HttpStatus.CONFLICT,
       );
+    // 예약 상태 변경
+    if (resv) {
+      resv.status = 'completed';
+      await this.reservRepository.update({ id: resv.id }, resv);
+    }
     // 책 상태 변경 (대출가능 => 대출중)
     bookAvail.status = 'borrowed';
     await this.bookRepository.update({ id: bookAvail.id }, bookAvail);
+    
     // loan 데이터 추가
     const loan_date = new Date();
     const due_date = new Date();
@@ -56,7 +69,7 @@ export class LoanService {
   async findLoans(userId: number): Promise<Loan[]> {
     return await this.loanRepository.find({
       where: { user: { id: userId } },
-      loadRelationIds: true,
+      loadRelationIds: { relations: ['book'] },
       order: { created_at: 'ASC' },
     });
   }
@@ -65,9 +78,9 @@ export class LoanService {
    * 대출 검색
    * @param id
    */
-  async findOneLoan(id: number, userId: number): Promise<Loan> {
+  async findOneLoan(id: number): Promise<Loan> {
     return await this.loanRepository.findOne({
-      where: { id: id, user: { id: userId } },
+      where: { id: id },
       loadRelationIds: true,
     });
   }
@@ -77,30 +90,27 @@ export class LoanService {
    * @param id
    */
   async updateLoan(id: number) {
-    let loan = await this.loanRepository.findOne({ where: { id: id } });
+    let loan = await this.loanRepository.findOne({
+      where: { id: id },
+      relations: ['book'],
+    });
     const returnDate = new Date();
     loan.return_date = returnDate;
 
     // 도서 연체 확인
-    if (loan.due_date < returnDate) {
-      loan.status = 'overdue';
-    } else {
-      loan.status = 'returned';
-    }
-    const resv = await this.reservRepository.findOne({
+    loan.status = loan.due_date < returnDate ? 'overdue' : 'returned';
+
+    // 도서 예약 확인
+     const resv = await this.reservRepository.findOne({
       where: { book: loan.book, status: 'pending' },
       order: { created_at: 'ASC' },
+      loadRelationIds: true,
     });
+    loan.book.status = resv ? 'reserved' : 'available';
 
-    if (resv) { // 예약 있음
-      loan.book.status = 'reserved';
-    } else { // 예약 없음
-      loan.book.status = 'available';
-    }
     loan = await this.loanRepository.save(loan);
-    const updateBook = await this.bookRepository.save(loan.book);
-    await this.loanKafka.returnBook(resv);
-
-    return updateBook;
+    await this.bookRepository.update({ id: loan.book.id }, loan.book);
+    if (resv) await this.loanKafka.returnBook(resv);
+    return loan;
   }
 }

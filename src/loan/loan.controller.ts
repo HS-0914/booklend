@@ -26,8 +26,8 @@ export class LoanController {
   // 대출 검색
   @Get('/:id')
   @UseGuards(UserGuard)
-  async getOneLoan(@Req() req: Request, @Param('id') id: number): Promise<Loan> {
-    return await this.loanService.findOneLoan(id, req.user.id);
+  async getOneLoan(@Param('id') id: number): Promise<Loan> {
+    return await this.loanService.findOneLoan(id);
   }
 
   // 도서 반납

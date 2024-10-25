@@ -8,6 +8,8 @@ export class Reservation extends Base {
 
   @Column({ type: 'date' })
   reservation_date: Date; // 도서가 예약된 일자
+
+  // (예: `pending`, `notified`, `completed`, `canceled`)
   @Column({ default: 'pending' })
   status: string;
   @ManyToOne(() => User, (user) => user.id)

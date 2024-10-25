@@ -4,7 +4,8 @@ import { Reservation } from '../domain/reservation.entity';
 import { Repository } from 'typeorm';
 import { Book } from '../domain/book.entity';
 import { Loan } from '../domain/loan.entity';
-import { EachMessagePayload, Kafka } from 'kafkajs';
+import { Consumer, EachMessagePayload, Kafka } from 'kafkajs';
+import { KafkaConfigService } from 'src/kafka/kafka.config';
 
 @Injectable()
 export class ReservationService {
@@ -69,50 +70,26 @@ export class ReservationService {
 
 @Injectable()
 export class KafkaService {
-  private kafka = new Kafka({
-    clientId: 'booklend kafka',
-    brokers: ['kafka:9092'],
-  });
-  private producer = this.kafka.producer();
-  private consumer = this.kafka.consumer({ groupId: 'booklend kafka group' });
-
-  constructor() {
+  private consumer: Consumer;
+  constructor(private readonly kafka: KafkaConfigService) {
+    this.consumer = this.kafka
+      .getKafka()
+      .consumer({ groupId: 'kafka booklend group' });
     this.consumer.connect();
-    this.consumer.subscribe({ topics: ['testA', 'testB', 'book-events'] });
-    this.consumer.run({ eachMessage: this.consumerCallback });
+    this.consumer.subscribe({ topic: 'book-events' });
+    this.consumer.run({
+      eachMessage: this.consumerCallback,
+    });
   }
 
   async consumerCallback(payload: EachMessagePayload) {
-    
-
-
     console.log('kafka message arrived (๑•᎑<๑)ｰ☆');
     console.log(payload);
     console.log(
       `topic: ${payload.topic}, Msg: ${payload.message.value.toString()}, partition: ${payload.partition}, key: ${payload.message.key.toString()}`,
     );
-    console.log(
-      `Msg: ${payload.message.value}`,
-    );
+    console.log(`Msg: ${payload.message.value}`);
   }
 
-  async addSubscriptionTopic(topic: string) {
-    console.log('stop');
-    await this.consumer.stop(); // 컨슈머 멈추고
-    await this.producer.connect();
-    await this.producer.send({
-      topic: topic,
-      messages: [{ value: 'Create Topic' }],
-    });
-    await this.producer.disconnect();
-    console.log('subscribe');
-    await this.consumer.subscribe({ topic }); // 구독하고
-    console.log('run');
-    await this.consumer.run({
-      // 다시 돌돌이!
-      eachMessage: this.consumerCallback,
-    });
-    console.log('end');
-
-  }
+  async addSubscriptionTopic(topic: string) {}
 }

@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from '../domain/book.entity';
 import { Loan } from '../domain/loan.entity';
 import { Repository } from 'typeorm';
+import { KafkaLoanProducer } from '../kafka/kafka.loan.producer';
+import { Reservation } from 'src/domain/reservation.entity';
 
 @Injectable()
 export class LoanService {
@@ -11,6 +13,9 @@ export class LoanService {
     private readonly loanRepository: Repository<Loan>,
     @InjectRepository(Book)
     private readonly bookRepository: Repository<Book>,
+    @InjectRepository(Reservation)
+    private readonly reservRepository: Repository<Reservation>,
+    private readonly loanKafka: KafkaLoanProducer,
   ) {}
 
   /**
@@ -52,6 +57,7 @@ export class LoanService {
     return await this.loanRepository.find({
       where: { user: { id: userId } },
       loadRelationIds: true,
+      order: { created_at: 'ASC' },
     });
   }
 
@@ -71,26 +77,30 @@ export class LoanService {
    * @param id
    */
   async updateLoan(id: number) {
-    const loan = await this.loanRepository.findOne({ where: { id: id } });
+    let loan = await this.loanRepository.findOne({ where: { id: id } });
     const returnDate = new Date();
+    loan.return_date = returnDate;
+
     // 도서 연체 확인
     if (loan.due_date < returnDate) {
-      await this.loanRepository.update(
-        { id: id },
-        { return_date: returnDate, status: 'overdue' },
-      );
+      loan.status = 'overdue';
     } else {
-      await this.loanRepository.update(
-        { id: id },
-        { return_date: returnDate, status: 'returned' },
-      );
+      loan.status = 'returned';
     }
-    const book = await this.bookRepository.findOne({
-      where: { id: loan.book.id },
+    const resv = await this.reservRepository.findOne({
+      where: { book: loan.book, status: 'pending' },
+      order: { created_at: 'ASC' },
     });
-    return await this.bookRepository.update(
-      { id: book.id },
-      { status: 'available' },
-    );
+
+    if (resv) { // 예약 있음
+      loan.book.status = 'reserved';
+    } else { // 예약 없음
+      loan.book.status = 'available';
+    }
+    loan = await this.loanRepository.save(loan);
+    const updateBook = await this.bookRepository.save(loan.book);
+    await this.loanKafka.returnBook(resv);
+
+    return updateBook;
   }
 }

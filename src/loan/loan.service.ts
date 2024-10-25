@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from '../domain/book.entity';
 import { Loan } from '../domain/loan.entity';
 import { Repository } from 'typeorm';
-import { KafkaLoanProducer } from '../kafka/kafka.loan.producer';
+import { KafkaProducerService } from './kafka.producer.service';
 import { Reservation } from 'src/domain/reservation.entity';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class LoanService {
     private readonly bookRepository: Repository<Book>,
     @InjectRepository(Reservation)
     private readonly reservRepository: Repository<Reservation>,
-    private readonly loanKafka: KafkaLoanProducer,
+    private readonly loanKafka: KafkaProducerService,
   ) {}
 
   /**

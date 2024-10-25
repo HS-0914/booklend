@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { Book } from '../domain/book.entity';
 import { Loan } from '../domain/loan.entity';
 import { Consumer, EachMessagePayload, Kafka } from 'kafkajs';
-import { KafkaConfigService } from 'src/kafka/kafka.config';
+import { KafkaConfigService } from 'src/kafka.config';
 
 @Injectable()
 export class ReservationService {

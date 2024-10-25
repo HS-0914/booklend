@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { KafkaConfigService } from './kafka.config';
+import { KafkaConfigService } from '../kafka.config';
 import { Producer } from 'kafkajs';
 import { Reservation } from '../domain/reservation.entity';
 
 @Injectable()
-export class KafkaLoanProducer {
+export class KafkaProducerService {
   private producer: Producer;
 
   constructor(private kafkaconf: KafkaConfigService) {

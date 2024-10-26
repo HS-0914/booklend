@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { BookModule } from './book/book.module';
 import { LoanModule } from './loan/loan.module';
 import { ReservationModule } from './reservation/reservation.module';
+import { NotificationModule } from './notification/notification.module';
 import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
@@ -29,6 +30,7 @@ import * as redisStore from 'cache-manager-redis-store';
     BookModule,
     LoanModule,
     ReservationModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

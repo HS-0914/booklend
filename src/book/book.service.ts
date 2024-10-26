@@ -9,7 +9,7 @@ export class BookService {
     constructor(
         @InjectRepository(Book)
         private readonly bookRepository: Repository<Book>
-    ) { }
+    ) {}
 
     /**
      * 책등록

@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { Book } from '../domain/book.entity';
 import { Loan } from '../domain/loan.entity';
 import { Consumer, EachMessagePayload, Kafka } from 'kafkajs';
-import { KafkaConfigService } from 'src/kafka.config';
+import { KafkaConfigService } from '../kafka.config';
 
 @Injectable()
 export class ReservationService {
@@ -55,6 +55,17 @@ export class ReservationService {
       where: { id: id, user: { id: userId } },
       loadRelationIds: true,
     });
+  }
+
+  async cancelReservation(id: number): Promise<any> {
+    const reserv = await this.reservRepository.findOne({ where: { id: id } });
+    if (!reserv)
+      throw new HttpException(
+        `Can't found reservation. id: ${id} (๑•᎑<๑)ｰ☆`,
+        HttpStatus.NOT_FOUND,
+      );
+    reserv.status = 'canceled';
+    return await this.reservRepository.update({id: reserv.id}, reserv);
   }
 
   async deleteReservation(id: number): Promise<Reservation> {

@@ -7,7 +7,7 @@ import { Loan } from '../domain/loan.entity';
 
 @Controller('loan')
 export class LoanController {
-  constructor(private loanService: LoanService) { };
+  constructor(private loanService: LoanService) {};
 
   // 도서 대출
   @Post()

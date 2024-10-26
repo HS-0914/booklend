@@ -8,7 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 
 @Controller('user')
 export class UserController {
-    constructor(private userService: UserService, private jwtService: JwtService) { }
+    constructor(private userService: UserService, private jwtService: JwtService) {}
 
     // 회원 가입
     @Post('/register')

@@ -7,7 +7,7 @@ import { Book } from '../domain/book.entity';
 
 @Controller('book')
 export class BookController {
-    constructor(private bookService: BookService) { };
+    constructor(private bookService: BookService) {};
 
     // 도서 추가
     @Post('/add')

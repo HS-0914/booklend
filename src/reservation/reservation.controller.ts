@@ -36,20 +36,15 @@ export class ReservationController {
     return await this.reservationService.getOneReservation(id, req.user.id);
   }
 
+  @Delete('cancel/:id')
+  @UseGuards(UserGuard)
+  async cancelReservation(@Param('id') id: number): Promise<any> {
+    return await this.reservationService.cancelReservation(id);
+  }
+
   @Delete('/:id')
   @UseGuards(UserGuard)
   async deleteReservation(@Param('id') id: number): Promise<Reservation> {
     return await this.reservationService.deleteReservation(id);
-  }
-
-  @Post('add-topic')
-  async addSubscriptionTopic(@Body('topic') topic: string): Promise<string> {
-    console.log(topic);
-    if (topic == undefined) {
-      return 'topic is undefined';
-    } else {
-      await this.kafkaService.addSubscriptionTopic(topic);
-      return `topic ${topic} added`;
-    }
   }
 }

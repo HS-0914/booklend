@@ -12,7 +12,7 @@ export class UserService {
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>
-    ) { }
+    ) {}
 
     // 회원가입
     async registerUser(newuserDTO: UserDTO): Promise<UserDTO> {

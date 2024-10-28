@@ -4,8 +4,6 @@ import { Reservation } from '../domain/reservation.entity';
 import { Repository } from 'typeorm';
 import { Book } from '../domain/book.entity';
 import { Loan } from '../domain/loan.entity';
-import { Consumer, EachMessagePayload, Kafka } from 'kafkajs';
-import { KafkaConfigService } from '../kafka.config';
 
 @Injectable()
 export class ReservationService {
@@ -23,6 +21,7 @@ export class ReservationService {
       where: {
         user: { id: userId },
         book: { id: bookId },
+        status: 'on_loan',
       },
       loadRelationIds: true,
     });
@@ -46,7 +45,7 @@ export class ReservationService {
   async getAllReservation(userId: number): Promise<Reservation[]> {
     return await this.reservRepository.find({
       where: { user: { id: userId } },
-      loadRelationIds: true,
+      loadRelationIds: {relations: ['book']},
     });
   }
 
@@ -77,28 +76,4 @@ export class ReservationService {
       );
     return await this.reservRepository.remove(reserv);
   }
-}
-
-@Injectable()
-export class KafkaService {
-  private consumer: Consumer;
-  constructor(private readonly kafka: KafkaConfigService) {
-    this.consumer = this.kafka
-      .getKafka()
-      .consumer({ groupId: 'kafka booklend group' });
-    this.consumer.connect();
-    this.consumer.subscribe({ topic: 'book-events' });
-    this.consumer.run({
-      eachMessage: this.consumerCallback,
-    });
-  }
-
-  async consumerCallback(payload: EachMessagePayload) {
-    console.log('kafka message arrived (๑•᎑<๑)ｰ☆');
-    console.log(
-      `topic: ${payload.topic}, Msg: ${payload.message.value.toString()}, partition: ${payload.partition}, key: ${payload.message.key.toString()}`,
-    );
-  }
-
-  async addSubscriptionTopic(topic: string) {}
 }

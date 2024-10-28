@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
-import { KafkaService, ReservationService } from './reservation.service';
+import { ReservationService } from './reservation.service';
 import { UserGuard } from '../security/user.guard';
 import { ReservationDTO } from './dto/reservation.dto';
 import { Request } from 'express';
@@ -9,7 +9,6 @@ import { Reservation } from '../domain/reservation.entity';
 export class ReservationController {
   constructor(
     private reservationService: ReservationService,
-    private kafkaService: KafkaService,
   ) {}
 
   @Post()

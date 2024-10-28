@@ -1,4 +1,42 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Notification } from '../domain/notification.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
-export class NotificationService {}
+export class NotificationService {
+  constructor(
+    @InjectRepository(Notification)
+    private readonly notifyRepository: Repository<Notification>,
+  ) {}
+
+  /**
+   * 알림 내역
+   * @param user_id
+   */
+  async getAllNotification(userId: number): Promise<Notification[]> {
+    return await this.notifyRepository.find({
+      where: { user: { id: userId } },
+      loadRelationIds: { relations: ['book'] },
+    });
+  }
+
+  /**
+   * 알림 내용
+   * @param id
+   */
+  async getOneNotification(id: number): Promise<Notification> {
+    return await this.notifyRepository.findOne({
+      where: { id: id },
+      loadRelationIds: { relations: ['book'] },
+    });
+  }
+
+  /**
+   * 알림 삭제
+   * @param id
+   */
+  async deleteNotification(id: number): Promise<any> {
+    return await this.notifyRepository.delete({ id: id });
+  }
+}

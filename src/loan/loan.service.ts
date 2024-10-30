@@ -35,11 +35,7 @@ export class LoanService {
       relations: ['user'],
     });
     const isUnavailable = bookAvail.status === 'borrowed' || (resv && resv.user.id !== userId);
-    if (isUnavailable)
-      throw new HttpException(
-        'The book is not available for loan! (๑•᎑<๑)ｰ☆',
-        HttpStatus.CONFLICT,
-      );
+    if (isUnavailable) throw new HttpException('The book is not available for loan! (๑•᎑<๑)ｰ☆', HttpStatus.CONFLICT);
     // 예약 상태 변경
     if (resv) {
       resv.status = 'completed';
@@ -48,7 +44,7 @@ export class LoanService {
     // 책 상태 변경 (대출가능 => 대출중)
     bookAvail.status = 'borrowed';
     await this.bookRepository.update({ id: bookAvail.id }, bookAvail);
-    
+
     // loan 데이터 추가
     const loan_date = new Date();
     const due_date = new Date();
@@ -101,12 +97,11 @@ export class LoanService {
     loan.status = loan.due_date < returnDate ? 'overdue' : 'returned';
 
     // 도서 예약 확인
-     const resv = await this.reservRepository.findOne({
-       where: { book: loan.book, status: 'pending' },
-       order: { created_at: 'ASC' },
-       relations: ['book'],
-       loadRelationIds: { relations: ['user'] },
-     });
+    const resv = await this.reservRepository.findOne({
+      where: { book: loan.book, status: 'pending' },
+      order: { created_at: 'ASC' },
+      relations: ['book', 'user'],
+    });
     loan.book.status = resv ? 'reserved' : 'available';
 
     loan = await this.loanRepository.save(loan);

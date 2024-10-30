@@ -19,6 +19,10 @@ services:
       - REDIS_PORT=6379
       - CHOKIDAR_USEPOLLING=true # hotreload
       - SMTP_TRNS=${SMTP_TRNS}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_EMAIL=${SMTP_EMAIL}
+      - SMTP_PASS=${SMTP_PASS}
     depends_on:
       - db
       - redis

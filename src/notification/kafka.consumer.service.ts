@@ -34,7 +34,6 @@ export class KafkaConsumerService {
     );
 
     const today = new Date();
-    const userId = +payload.message.key.toString();
     const reserv: Reservation = JSON.parse(payload.message.value.toString()).reserv;
 
     // 알림 내역 생성
@@ -42,7 +41,7 @@ export class KafkaConsumerService {
       type: 'reservation_ready',
       message: '예약된 도서가 반납됐습니다. 일정 기간 내 대여해주세요.',
       sent_at: today,
-      user: { id: userId },
+      user: reserv.user,
       book: reserv.book,
     });
 
@@ -54,10 +53,9 @@ export class KafkaConsumerService {
   async sendMail(notification: Notification) {
     const msg: string = notification.message;
     const title: string = notification.book.title;
-
     console.log(msg);
     console.log(title);
-    await this.mail.sendMail({
+    const sent = await this.mail.sendMail({
       to: notification.user.email,
       subject: '도서 예약 알림',
       template: './email',
@@ -67,5 +65,7 @@ export class KafkaConsumerService {
         // notification: JSON.stringify({ notification }),
       },
     });
+
+    console.log(sent);
   }
 }

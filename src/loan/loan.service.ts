@@ -102,10 +102,11 @@ export class LoanService {
 
     // 도서 예약 확인
      const resv = await this.reservRepository.findOne({
-      where: { book: loan.book, status: 'pending' },
-      order: { created_at: 'ASC' },
-      loadRelationIds: true,
-    });
+       where: { book: loan.book, status: 'pending' },
+       order: { created_at: 'ASC' },
+       relations: ['book'],
+       loadRelationIds: { relations: ['user'] },
+     });
     loan.book.status = resv ? 'reserved' : 'available';
 
     loan = await this.loanRepository.save(loan);

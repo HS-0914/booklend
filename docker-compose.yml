@@ -18,6 +18,7 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - CHOKIDAR_USEPOLLING=true # hotreload
+      - SMTP_TRNS=${SMTP_TRNS}
     depends_on:
       - db
       - redis
@@ -56,7 +57,7 @@ services:
     ports:
       - '9092:9092'
     volumes:
-      - "kafka_data:/data"
+      - 'kafka_data:/data'
     environment:
       # kraft
       - KAFKA_CFG_NODE_ID=0
@@ -71,7 +72,6 @@ services:
       # - ALLOW_PLAINTEXT_LISTENER=yes
       # KAFKA_KRAFT_CLUSTER_ID not set - If using multiple nodes then you must use the same Cluster ID for each one
       # Kafka has been configured with a PLAINTEXT listener, this setting is not recommended for production environments.
-
 
   kafka-ui:
     container_name: kafka-ui
@@ -89,5 +89,4 @@ volumes:
   postgres_data:
   redis_data:
   kafka_data:
-
 # 도커 에러 - https://stackoverflow.com/questions/65272764/ports-are-not-available-listen-tcp-0-0-0-0-50070-bind-an-attempt-was-made-to

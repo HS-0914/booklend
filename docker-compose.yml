@@ -15,8 +15,7 @@ services:
 
     environment: # 컨테이너 내에서 사용할 환경 변수를 정의(processs.env)
       - DATABASE_URL=postgresql://postgres:3527@db:5432/booklend
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      - REDIS_URL=${REDIS_URL}
       - CHOKIDAR_USEPOLLING=true # hotreload
       - SMTP_TRNS=${SMTP_TRNS}
       - SMTP_HOST=${SMTP_HOST}

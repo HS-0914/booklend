@@ -5,8 +5,8 @@ import * as cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: true,
-    credentials: true,
+    origin: true, // 모든 접근 허용
+    credentials: true, // 쿠키 사용
     exposedHeaders: ['Authorization'],
   });
   app.use(cookieParser());

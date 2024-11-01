@@ -59,13 +59,15 @@ export class BookService {
     const findRedis = await this.redis.get(`book:${bookID}`);
     if (findRedis) {
       console.log('isRedis, return redis');
-      const redisBook: Book = JSON.parse(findRedis);
-      console.log(redisBook);
-      return redisBook;
+      const redisBook = JSON.parse(findRedis);
+      console.log(redisBook.findBook);
+      return redisBook.findBook;
     }
+    console.log('findRedis');
+    console.log(findRedis);
     const findBook = await this.bookRepository.findOne({ where: { id: bookID } });
-    await this.redis.hset(`book:${bookID}`, findBook);
-    await this.redis.expire(`book:${bookID}`, 100);
+    const redisBook = JSON.stringify({ findBook });
+    await this.redis.set(`book:${bookID}`, redisBook, 'EX', 30);
     return findBook;
   }
 

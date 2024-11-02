@@ -58,16 +58,11 @@ export class BookService {
   async findByID(bookID: number): Promise<Book> {
     const findRedis = await this.redis.get(`book:${bookID}`);
     if (findRedis) {
-      console.log('isRedis, return redis');
-      const redisBook = JSON.parse(findRedis);
-      console.log(redisBook.findBook);
-      return redisBook.findBook;
+      return JSON.parse(findRedis);
     }
-    console.log('findRedis');
-    console.log(findRedis);
     const findBook = await this.bookRepository.findOne({ where: { id: bookID } });
-    const redisBook = JSON.stringify({ findBook });
-    await this.redis.set(`book:${bookID}`, redisBook, 'EX', 30);
+    const redisBook = JSON.stringify(findBook);
+    await this.redis.set(`book:${bookID}`, redisBook, 'EX', 30); // ex = 초, px = 밀리초
     return findBook;
   }
 

@@ -32,7 +32,6 @@ export class BookController {
 
   // 도서 검색
   @Get('/search')
-  @UseGuards(UserGuard)
   async searchBook(@Query('type') type: string | null, @Query('search') search: string): Promise<Book[]> {
     const result = type ? await this.bookService.findByType(type, search) : await this.bookService.findAllType(search);
     return result;
@@ -40,10 +39,15 @@ export class BookController {
 
   // 도서 상세 검색
   @Get('/search/:id')
-  @UseGuards(UserGuard)
   // ParseIntPipe로 number 전환
   async searchBookDetail(@Param('id', ParseIntPipe) id: number): Promise<Book> {
     return await this.bookService.findByID(id);
+  }
+
+  // 인기 도서 검색
+  @Get('/popular')
+  async getTop10Books(): Promise<Book[] | string> {
+    return await this.bookService.getTop10Books();
   }
 
   // 회원 정보 수정

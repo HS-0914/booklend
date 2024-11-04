@@ -58,12 +58,47 @@ export class BookService {
   async findByID(bookID: number): Promise<Book> {
     const findRedis = await this.redis.get(`book:${bookID}`);
     if (findRedis) {
-      return JSON.parse(findRedis);
+      const findBook = JSON.parse(findRedis);
+      await this.incrementBookScore(findBook);
+      return findBook;
     }
     const findBook = await this.bookRepository.findOne({ where: { id: bookID } });
     const redisBook = JSON.stringify(findBook);
-    await this.redis.set(`book:${bookID}`, redisBook, 'EX', 30); // ex = 초, px = 밀리초
+    await this.redis.set(`book:${bookID}`, redisBook, 'EX', 300); // ex = 초, px = 밀리초
+    await this.incrementBookScore(findBook);
     return findBook;
+  }
+
+  async incrementBookScore(book: Book): Promise<void> {
+    const weeklyKey = this.getWeeklyKey();
+    const redisBook = JSON.stringify(book);
+    await this.redis.zincrby(weeklyKey, 1, redisBook);
+  }
+
+  private getWeeklyKey(): string {
+    const startOfWeek = new Date();
+    // 현재 날짜의 요일을 가져옴 (0: 일요일, 1: 월요일, ..., 6: 토요일)
+    const dayOfWeek = startOfWeek.getDay();
+    // 이번 주 월요일 (0: 일요일)
+    startOfWeek.setDate(startOfWeek.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+    const year = startOfWeek.getFullYear();
+    const month = startOfWeek.getMonth() + 1;
+    const day = startOfWeek.getDay();
+    return `weekly:popular:${year}-${month}-${day}`;
+  }
+
+  async getTop10Books(): Promise<Book[] | string> {
+    const weeklyKey = this.getWeeklyKey();
+    const weeklyBooksString = await this.redis.zrevrange(weeklyKey, 0, 9);
+
+    if (weeklyBooksString.length) {
+      const weeklyBooks: Book[] = weeklyBooksString.map((e) => {
+        return JSON.parse(e);
+      });
+      return weeklyBooks;
+    } else {
+      return 'no weekly popular books';
+    }
   }
 
   /**

@@ -6,6 +6,8 @@ services:
     build: . # Dockerfile이 있는 경로 (절대경로 또는 상대경로) # 현재 디렉토리의 도커파일 빌드
     # container_name: app # 컨테이너 이름(유저 작명)
     container_name: nestjs-app
+    env_file: # .env 파일을 지정하여 환경 변수를 로드
+      - .env
     ports:
       - '8000:8000'
     volumes:
@@ -14,14 +16,8 @@ services:
     command: npm run start:dev
 
     environment: # 컨테이너 내에서 사용할 환경 변수를 정의(processs.env)
-      - DATABASE_URL=postgresql://postgres:3527@db:5432/booklend
-      - REDIS_URL=${REDIS_URL}
       - CHOKIDAR_USEPOLLING=true # hotreload
-      - SMTP_TRNS=${SMTP_TRNS}
-      - SMTP_HOST=${SMTP_HOST}
-      - SMTP_PORT=${SMTP_PORT}
-      - SMTP_EMAIL=${SMTP_EMAIL}
-      - SMTP_PASS=${SMTP_PASS}
+
     depends_on:
       - db
       - redis

@@ -1,7 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
-import { Base } from "./base.entity";
-import { User } from "./user.entity";
-import { Book } from "./book.entity";
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Base } from './base.entity';
+import { User } from './user.entity';
+import { Book } from './book.entity';
 
 @Entity('notifications')
 export class Notification extends Base {

@@ -1,28 +1,31 @@
-import { Column, Entity } from "typeorm";
-import { Base } from "./base.entity";
+import { Column, Entity } from 'typeorm';
+import { Base } from './base.entity';
 
 @Entity('books')
 export class Book extends Base {
+  @Column()
+  title: string;
+  @Column()
+  author: string;
+  @Column()
+  publisher: string;
+  @Column()
+  published_year: number;
+  @Column() // 권
+  volume: number;
+  @Column()
+  isbn: string;
 
-    @Column()
-    title: string;
-    @Column()
-    author: string;
-    @Column()
-    isbn: string;
-    @Column()
-    publisher: string;
-    @Column({ type: 'date' }) // yyyy-mm-dd 형식으로 저장
-    published_date: Date;
-    @Column()
-    category: string;
+  /* 
+    Korean Decimal Classification
+    000 총류, 100 철학, 200 종교, 300 사회과학,
+    400 자연과학, 500 기술과학, 600 예술,
+    700 언어(어학), 800 문학, 900 역사
+    */
+  @Column()
+  KDC: string;
 
-    // (`available`, `borrowed`, `reserved`)
-    @Column({ default: 'available' })
-    status: string;
-    @Column({ type: 'text' })
-    description: string;
-
-    //@OneToMany()
-    //role: number? any[]?
+  // (`available`, `borrowed`, `reserved`)
+  @Column({ default: 'available' })
+  status: string;
 }

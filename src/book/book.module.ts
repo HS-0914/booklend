@@ -8,10 +8,8 @@ import { User } from '../domain/user.entity';
 import { Book } from '../domain/book.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([User, Book]),
-  ],
+  imports: [TypeOrmModule.forFeature([User, Book])],
   controllers: [BookController],
-  providers: [BookService, JwtStrategy, UserService]
+  providers: [BookService, JwtStrategy, UserService],
 })
-export class BookModule { }
+export class BookModule {}

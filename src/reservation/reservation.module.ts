@@ -10,6 +10,6 @@ import { KafkaConfigService } from '../kafka.config';
 @Module({
   imports: [TypeOrmModule.forFeature([Reservation, Loan, Book])],
   controllers: [ReservationController],
-  providers: [ReservationService, KafkaConfigService]
+  providers: [ReservationService, KafkaConfigService],
 })
 export class ReservationModule {}

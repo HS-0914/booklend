@@ -4,19 +4,17 @@ import { UserGuard } from '../security/user.guard';
 import { ReservationDTO } from './dto/reservation.dto';
 import { Request } from 'express';
 import { Reservation } from '../domain/reservation.entity';
+import { RolesGuard } from 'src/security/role.guard';
+import { Roles } from 'src/user/role.decorator';
+import { RoleType } from 'src/types/role.type';
 
 @Controller('reservation')
 export class ReservationController {
-  constructor(
-    private reservationService: ReservationService,
-  ) {}
+  constructor(private reservationService: ReservationService) {}
 
   @Post()
   @UseGuards(UserGuard)
-  async createReservation(
-    @Req() req: Request,
-    @Body() { bookId }: ReservationDTO,
-  ): Promise<Reservation> {
+  async createReservation(@Req() req: Request, @Body() { bookId }: ReservationDTO): Promise<Reservation> {
     return await this.reservationService.createReservation(req.user.id, bookId);
   }
 
@@ -28,10 +26,7 @@ export class ReservationController {
 
   @Get('/:id')
   @UseGuards(UserGuard)
-  async getOneReservation(
-    @Req() req: Request,
-    @Param('id') id: number,
-  ): Promise<Reservation> {
+  async getOneReservation(@Req() req: Request, @Param('id') id: number): Promise<Reservation> {
     return await this.reservationService.getOneReservation(id, req.user.id);
   }
 
@@ -42,7 +37,8 @@ export class ReservationController {
   }
 
   @Delete('/:id')
-  @UseGuards(UserGuard)
+  @UseGuards(UserGuard, RolesGuard)
+  @Roles(RoleType.ADMIN)
   async deleteReservation(@Param('id') id: number): Promise<Reservation> {
     return await this.reservationService.deleteReservation(id);
   }

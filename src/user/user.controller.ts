@@ -40,7 +40,8 @@ export class UserController {
 
   // 회원 정보 조회
   @Get('/profile')
-  @UseGuards(UserGuard)
+  @UseGuards(UserGuard, RolesGuard)
+  @Roles(RoleType.USER)
   getProfile(@Req() req: Request, @Res() res: Response): any {
     return res.send(req.user);
   }
@@ -49,10 +50,12 @@ export class UserController {
   @Put('/profile')
   @UseGuards(UserGuard, RolesGuard)
   @UsePipes(ValidationPipe)
+  @Roles(RoleType.USER)
   async putProfile(@Body() userDTO: UserDTO): Promise<any> {
     return await this.userService.updateUser(userDTO);
   }
 
+  // 권한 관리
   @Put('/role')
   @UseGuards(UserGuard, RolesGuard)
   @UsePipes(ValidationPipe)

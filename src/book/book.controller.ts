@@ -6,7 +6,6 @@ import {
   ParseIntPipe,
   Post,
   Query,
-  Res,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -17,6 +16,9 @@ import { UserGuard } from '../security/user.guard';
 import { BookDTO } from './dto/book.dto';
 import { BookService } from './book.service';
 import { Book } from '../domain/book.entity';
+import { RoleType } from 'src/types/role.type';
+import { Roles } from 'src/user/role.decorator';
+import { RolesGuard } from 'src/security/role.guard';
 
 @Controller('book')
 export class BookController {
@@ -24,7 +26,8 @@ export class BookController {
 
   // 도서 추가
   @Post('/add')
-  @UseGuards(UserGuard)
+  @UseGuards(UserGuard, RolesGuard)
+  @Roles(RoleType.ADMIN)
   @UsePipes(ValidationPipe)
   async addBook(@Body() bookDTO: BookDTO): Promise<BookDTO> {
     return await this.bookService.registerBook(bookDTO);
@@ -50,9 +53,10 @@ export class BookController {
     return await this.bookService.getTop10Books();
   }
 
-  // 회원 정보 수정
+  // 도서 정보 수정
   @Put('/edit/:id')
-  @UseGuards(UserGuard)
+  @UseGuards(UserGuard, RolesGuard)
+  @Roles(RoleType.ADMIN)
   @UsePipes(ValidationPipe)
   async putBook(@Param('id', ParseIntPipe) id: number, @Body() bookDTO: BookDTO): Promise<any> {
     return await this.bookService.updateBook(id, bookDTO);
@@ -60,7 +64,8 @@ export class BookController {
 
   // 책 삭제
   @Delete('/delete/:id')
-  @UseGuards(UserGuard)
+  @UseGuards(UserGuard, RolesGuard)
+  @Roles(RoleType.ADMIN)
   async deleteBook(@Param('id', ParseIntPipe) id: number): Promise<Book> {
     return await this.bookService.deleteByID(id);
   }

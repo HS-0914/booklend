@@ -1,0 +1,1 @@
+COPY books(title, author, publisher, published_year, isbn, volume, kdc) FROM '/var/lib/postgresql/books.csv' DELIMITER ',' CSV HEADER ENCODING 'UTF-8';

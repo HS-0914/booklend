@@ -3,6 +3,9 @@ import { NotificationService } from './notification.service';
 import { UserGuard } from '../security/user.guard';
 import { Request } from 'express';
 import { Notification } from '../domain/notification.entity';
+import { RolesGuard } from 'src/security/role.guard';
+import { RoleType } from 'src/types/role.type';
+import { Roles } from 'src/user/role.decorator';
 
 @Controller('notification')
 export class NotificationController {
@@ -21,11 +24,12 @@ export class NotificationController {
   async getOneNotification(@Param('id') id: number): Promise<Notification> {
     return await this.notificationService.getOneNotification(id);
   }
-  
+
   // 알림 삭제하기
   @Delete(':/id')
-  @UseGuards(UserGuard)
-  async deleteNotification(@Param('id') id: number){
+  @UseGuards(UserGuard, RolesGuard)
+  @Roles(RoleType.ADMIN)
+  async deleteNotification(@Param('id') id: number) {
     return await this.notificationService.deleteNotification(id);
   }
 }

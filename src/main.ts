@@ -15,3 +15,4 @@ async function bootstrap() {
 bootstrap();
 
 // https://velog.io/@kwontae1313/NestJS-CORS - nestjs cors 설정
+// 어드민, 도서 추가, https?

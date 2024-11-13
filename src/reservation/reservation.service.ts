@@ -29,10 +29,7 @@ export class ReservationService {
       where: { id: bookId },
     });
     if (alreadyLoan || findBook.status !== 'borrowed')
-      throw new HttpException(
-        'Already loan book or The book is not borrowed! (๑•᎑<๑)ｰ☆',
-        HttpStatus.CONFLICT,
-      );
+      throw new HttpException('Already loan book or The book is not borrowed! (๑•᎑<๑)ｰ☆', HttpStatus.CONFLICT);
     const reservation_date = new Date();
     const reserv = this.reservRepository.create({
       reservation_date: reservation_date,
@@ -45,7 +42,7 @@ export class ReservationService {
   async getAllReservation(userId: number): Promise<Reservation[]> {
     return await this.reservRepository.find({
       where: { user: { id: userId } },
-      loadRelationIds: {relations: ['book']},
+      loadRelationIds: { relations: ['book'] },
     });
   }
 
@@ -58,22 +55,14 @@ export class ReservationService {
 
   async cancelReservation(id: number): Promise<any> {
     const reserv = await this.reservRepository.findOne({ where: { id: id } });
-    if (!reserv)
-      throw new HttpException(
-        `Can't found reservation. id: ${id} (๑•᎑<๑)ｰ☆`,
-        HttpStatus.NOT_FOUND,
-      );
+    if (!reserv) throw new HttpException(`Can't found reservation. id: ${id} (๑•᎑<๑)ｰ☆`, HttpStatus.NOT_FOUND);
     reserv.status = 'canceled';
-    return await this.reservRepository.update({id: reserv.id}, reserv);
+    return await this.reservRepository.update({ id: reserv.id }, reserv);
   }
 
   async deleteReservation(id: number): Promise<Reservation> {
     const reserv = await this.reservRepository.findOne({ where: { id: id } });
-    if (!reserv)
-      throw new HttpException(
-        `Can't found reservation. id: ${id} (๑•᎑<๑)ｰ☆`,
-        HttpStatus.NOT_FOUND,
-      );
+    if (!reserv) throw new HttpException(`Can't found reservation. id: ${id} (๑•᎑<๑)ｰ☆`, HttpStatus.NOT_FOUND);
     return await this.reservRepository.remove(reserv);
   }
 }

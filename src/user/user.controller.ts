@@ -5,6 +5,9 @@ import { UserDTO } from './dto/user.dto';
 import { UserGuard } from '../security/user.guard';
 import { Payload } from '../security/payload.interface';
 import { JwtService } from '@nestjs/jwt';
+import { RolesGuard } from '../security/role.guard';
+import { Roles } from './role.decorator';
+import { RoleType } from 'src/types/role.type';
 
 @Controller('user')
 export class UserController {
@@ -37,17 +40,28 @@ export class UserController {
 
   // 회원 정보 조회
   @Get('/profile')
-  @UseGuards(UserGuard)
+  @UseGuards(UserGuard, RolesGuard)
+  @Roles(RoleType.USER)
   getProfile(@Req() req: Request, @Res() res: Response): any {
     return res.send(req.user);
   }
 
   // 회원 정보 수정
   @Put('/profile')
-  @UseGuards(UserGuard)
+  @UseGuards(UserGuard, RolesGuard)
   @UsePipes(ValidationPipe)
+  @Roles(RoleType.USER)
   async putProfile(@Body() userDTO: UserDTO): Promise<any> {
     return await this.userService.updateUser(userDTO);
+  }
+
+  // 권한 관리
+  @Put('/role')
+  @UseGuards(UserGuard, RolesGuard)
+  @UsePipes(ValidationPipe)
+  @Roles(RoleType.ROOT)
+  async putRole(@Body() userDTO: UserDTO): Promise<any> {
+    return await this.userService.updateRole(userDTO);
   }
 
   // 로그아웃
@@ -63,7 +77,8 @@ export class UserController {
 
   // 쿠키 테스트
   @Get('/cookie-test')
-  @UseGuards(UserGuard)
+  @UseGuards(UserGuard, RolesGuard)
+  @Roles(RoleType.ADMIN)
   getCookies(@Req() req: Request, @Res() res: Response): any {
     const jwt = req.cookies['AuthToken'];
     return res.send(jwt);

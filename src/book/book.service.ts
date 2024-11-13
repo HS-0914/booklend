@@ -31,15 +31,19 @@ export class BookService {
    * @param keyword
    */
   async findAllType(keyword: string): Promise<Book[]> {
-    const bookFind = await this.bookRepository.find({
-      where: [
-        { title: Like(`%${keyword}%`) },
-        { author: Like(`%${keyword}%`) },
-        { isbn: keyword },
-        { publisher: Like(`%${keyword}%`) },
-      ],
-    });
-    return bookFind;
+    if (keyword) {
+      const bookFind = await this.bookRepository.find({
+        where: [
+          { title: Like(`%${keyword}%`) },
+          { author: Like(`%${keyword}%`) },
+          { isbn: keyword },
+          { publisher: Like(`%${keyword}%`) },
+        ],
+      });
+      return bookFind;
+    } else {
+      throw new HttpException(`put some search words (๑•᎑<๑)ｰ☆`, HttpStatus.BAD_REQUEST);
+    }
   }
 
   /**

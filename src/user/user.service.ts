@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, OnModuleInit, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/domain/user.entity';
 import { FindOneOptions, Repository } from 'typeorm';
@@ -7,13 +7,14 @@ import * as bcrypt from 'bcrypt';
 import { Payload } from '../security/payload.interface';
 
 @Injectable()
-export class UserService {
+export class UserService implements OnModuleInit {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) {
+  ) {}
+
+  async onModuleInit() {
     this.createAdmin();
-    console.log('createAdmin');
   }
 
   private async createAdmin() {
@@ -24,6 +25,7 @@ export class UserService {
     if (!user) {
       const password = await this.transformPw(process.env.ROOT_PASS);
       const root = this.userRepository.create({
+        id: 1,
         username,
         email: process.env.ROOT_EMAIL,
         password,

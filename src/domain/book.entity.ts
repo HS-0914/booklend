@@ -3,18 +3,18 @@ import { Base } from './base.entity';
 
 @Entity('books')
 export class Book extends Base {
-  @Column()
+  @Column({ nullable: true })
   title: string;
-  @Column()
+  @Column({ nullable: true })
   author: string;
-  @Column()
+  @Column({ nullable: true })
   publisher: string;
-  @Column()
-  published_year: number;
-  @Column() // 권
-  volume: number;
+  @Column({ nullable: true })
+  published_year: string;
   @Column()
   isbn: string;
+  @Column({ nullable: true }) // 권
+  volume: string;
 
   /* 
     Korean Decimal Classification
@@ -22,8 +22,8 @@ export class Book extends Base {
     400 자연과학, 500 기술과학, 600 예술,
     700 언어(어학), 800 문학, 900 역사
     */
-  @Column()
-  KDC: string;
+  @Column({ nullable: true })
+  kdc: string;
 
   // (`available`, `borrowed`, `reserved`)
   @Column({ default: 'available' })

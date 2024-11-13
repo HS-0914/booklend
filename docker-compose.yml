@@ -38,6 +38,9 @@ services:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./db/csv/:/var/lib/postgresql/
+      - ./db/init/:/docker-entrypoint-initdb.d/
+
       # 프로덕션 환경에서는 보통 이름이 지정된 볼륨(Named Volume)을 사용하여 Docker가 데이터를 안정적으로 관리하게 하는 것이 일반적
       # 개발 환경에서는 바인드 마운트(Bind Mount)를 사용하여 코드와 데이터를 쉽게 접근하고 수정할 수 있도록 설정하는 것이 유리
 

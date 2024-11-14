@@ -5,7 +5,7 @@ import { Request } from 'express';
 import { Notification } from '../resources/db/domain/notification.entity';
 import { RolesGuard } from 'src/resources/security/role.guard';
 import { RoleType } from 'src/resources/types/role.type';
-import { Roles } from 'src/user/role.decorator';
+import { Roles } from 'src/resources/types/role.decorator';
 
 @Controller('notification')
 export class NotificationController {

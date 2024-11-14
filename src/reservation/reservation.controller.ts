@@ -5,7 +5,7 @@ import { ReservationDTO } from './dto/reservation.dto';
 import { Request } from 'express';
 import { Reservation } from '../resources/db/domain/reservation.entity';
 import { RolesGuard } from '../resources/security/role.guard';
-import { Roles } from '../user/role.decorator';
+import { Roles } from '../resources/types/role.decorator';
 import { RoleType } from '../resources/types/role.type';
 
 @Controller('reservation')

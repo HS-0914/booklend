@@ -6,7 +6,7 @@ import { UserGuard } from '../resources/security/user.guard';
 import { Payload } from '../resources/security/payload.interface';
 import { JwtService } from '@nestjs/jwt';
 import { RolesGuard } from '../resources/security/role.guard';
-import { Roles } from './role.decorator';
+import { Roles } from '../resources/types/role.decorator';
 import { RoleType } from 'src/resources/types/role.type';
 
 @Controller('user')

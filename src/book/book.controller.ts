@@ -17,7 +17,7 @@ import { BookDTO } from './dto/book.dto';
 import { BookService } from './book.service';
 import { Book } from '../resources/db/domain/book.entity';
 import { RoleType } from 'src/resources/types/role.type';
-import { Roles } from 'src/user/role.decorator';
+import { Roles } from 'src/resources/types/role.decorator';
 import { RolesGuard } from 'src/resources/security/role.guard';
 
 @Controller('book')

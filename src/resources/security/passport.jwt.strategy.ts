@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy, VerifiedCallback } from 'passport-jwt';
-import { UserService } from '../user/user.service';
+import { UserService } from '../../user/user.service';
 import { Payload } from './payload.interface';
 import { Request } from 'express';
 

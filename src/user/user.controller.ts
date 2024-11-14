@@ -2,12 +2,12 @@ import { Body, Controller, Get, Post, Put, Req, Res, UseGuards, UsePipes, Valida
 import { Response, Request } from 'express';
 import { UserService } from './user.service';
 import { UserDTO } from './dto/user.dto';
-import { UserGuard } from '../security/user.guard';
-import { Payload } from '../security/payload.interface';
+import { UserGuard } from '../resources/security/user.guard';
+import { Payload } from '../resources/security/payload.interface';
 import { JwtService } from '@nestjs/jwt';
-import { RolesGuard } from '../security/role.guard';
+import { RolesGuard } from '../resources/security/role.guard';
 import { Roles } from './role.decorator';
-import { RoleType } from 'src/types/role.type';
+import { RoleType } from 'src/resources/types/role.type';
 
 @Controller('user')
 export class UserController {

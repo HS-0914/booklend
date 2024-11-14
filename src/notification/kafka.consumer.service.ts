@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { KafkaConfigService } from '../kafka.config';
 import { Consumer, EachMessagePayload } from 'kafkajs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Notification } from '../domain/notification.entity';
+import { Notification } from '../resources/db/domain/notification.entity';
 import { Repository } from 'typeorm';
-import { Reservation } from 'src/domain/reservation.entity';
+import { Reservation } from '../resources/db/domain/reservation.entity';
 import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()

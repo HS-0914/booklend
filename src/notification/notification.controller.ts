@@ -1,10 +1,10 @@
 import { Controller, Delete, Get, Param, Req, UseGuards } from '@nestjs/common';
 import { NotificationService } from './notification.service';
-import { UserGuard } from '../security/user.guard';
+import { UserGuard } from '../resources/security/user.guard';
 import { Request } from 'express';
-import { Notification } from '../domain/notification.entity';
-import { RolesGuard } from 'src/security/role.guard';
-import { RoleType } from 'src/types/role.type';
+import { Notification } from '../resources/db/domain/notification.entity';
+import { RolesGuard } from 'src/resources/security/role.guard';
+import { RoleType } from 'src/resources/types/role.type';
 import { Roles } from 'src/user/role.decorator';
 
 @Controller('notification')

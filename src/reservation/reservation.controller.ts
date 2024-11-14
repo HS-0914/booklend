@@ -1,12 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { ReservationService } from './reservation.service';
-import { UserGuard } from '../security/user.guard';
+import { UserGuard } from '../resources/security/user.guard';
 import { ReservationDTO } from './dto/reservation.dto';
 import { Request } from 'express';
-import { Reservation } from '../domain/reservation.entity';
-import { RolesGuard } from 'src/security/role.guard';
-import { Roles } from 'src/user/role.decorator';
-import { RoleType } from 'src/types/role.type';
+import { Reservation } from '../resources/db/domain/reservation.entity';
+import { RolesGuard } from '../resources/security/role.guard';
+import { Roles } from '../user/role.decorator';
+import { RoleType } from '../resources/types/role.type';
 
 @Controller('reservation')
 export class ReservationController {

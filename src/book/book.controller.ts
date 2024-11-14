@@ -12,13 +12,13 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
-import { UserGuard } from '../security/user.guard';
+import { UserGuard } from '../resources/security/user.guard';
 import { BookDTO } from './dto/book.dto';
 import { BookService } from './book.service';
-import { Book } from '../domain/book.entity';
-import { RoleType } from 'src/types/role.type';
+import { Book } from '../resources/db/domain/book.entity';
+import { RoleType } from 'src/resources/types/role.type';
 import { Roles } from 'src/user/role.decorator';
-import { RolesGuard } from 'src/security/role.guard';
+import { RolesGuard } from 'src/resources/security/role.guard';
 
 @Controller('book')
 export class BookController {

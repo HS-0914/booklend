@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable, OnModuleInit, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/domain/user.entity';
+import { User } from '../resources/db/domain/user.entity';
 import { FindOneOptions, Repository } from 'typeorm';
 import { UserDTO } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
-import { Payload } from '../security/payload.interface';
+import { Payload } from '../resources/security/payload.interface';
 
 @Injectable()
 export class UserService implements OnModuleInit {

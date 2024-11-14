@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { LoanService } from './loan.service';
-import { UserGuard } from '../security/user.guard';
+import { UserGuard } from '../resources/security/user.guard';
 import { Request } from 'express';
 import { LoanDTO } from './dto/loan.dto';
-import { Loan } from '../domain/loan.entity';
+import { Loan } from '../resources/db/domain/loan.entity';
 
 @Controller('loan')
 export class LoanController {

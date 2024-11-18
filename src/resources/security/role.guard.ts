@@ -1,8 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
-import { User } from '../domain/user.entity';
-import { RoleType } from '../types/role.type';
+import { User } from '../db/domain/user.entity';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -10,12 +9,10 @@ export class RolesGuard implements CanActivate {
   // canActivate() 함수가 true 또는 Promise<true>를 반환했을 때만 해당 요청을 컨트롤러로 전달
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const requiredRole = this.reflector.get<string[]>('roles', context.getHandler()); // context.getHandler를 읽어올수있음
-    console.log(requiredRole);
     if (!requiredRole) return true;
 
     const request = context.switchToHttp().getRequest();
     const user: User = request.user; //passport.jwt.strategy에 validate()에서 넘어온 user
-    console.log(user);
 
     return user && user.role && requiredRole.some((role) => this.checkRole(user.role, role));
   }

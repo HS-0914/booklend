@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Book } from '../domain/book.entity';
+import { Book } from '../resources/db/domain/book.entity';
 import { Like, Repository } from 'typeorm';
 import { BookDTO } from './dto/book.dto';
 import { InjectRedis } from '@nestjs-modules/ioredis';

@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { KafkaConfigService } from '../kafka.config';
 import { Consumer, EachMessagePayload } from 'kafkajs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Notification } from '../domain/notification.entity';
+import { Notification } from '../resources/db/domain/notification.entity';
 import { Repository } from 'typeorm';
-import { Reservation } from 'src/domain/reservation.entity';
+import { Reservation } from '../resources/db/domain/reservation.entity';
 import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
@@ -52,16 +52,14 @@ export class KafkaConsumerService {
 
   async sendMail(notification: Notification) {
     const msg: string = notification.message;
-    const title: string = notification.book.title;
     console.log(msg);
-    console.log(title);
     const sent = await this.mail.sendMail({
       to: notification.user.email,
       subject: '도서 예약 알림',
-      template: './email',
+      template: './notification-email',
       context: {
-        message: msg,
-        book: title,
+        title: notification.book.title,
+        author: notification.book.author,
         // notification: JSON.stringify({ notification }),
       },
     });

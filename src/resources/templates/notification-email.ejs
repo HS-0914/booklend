@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Return Notification</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        text-align: center;
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        background-color: #ffffff;
+        border-radius: 5px;
+        padding: 30px;
+        margin: auto;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        color: #4caf50;
+      }
+      .book-info {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #4caf50;
+        background-color: #f4f4f4;
+        padding: 10px 20px;
+        border-radius: 5px;
+        margin: 20px 0;
+        display: inline-block;
+      }
+      p {
+        line-height: 1.5;
+      }
+      .footer {
+        margin-top: 30px;
+        font-size: 0.9em;
+        color: #777;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Book Return Notification</h2>
+      <p>The book you reserved is now available for borrowing! Here are the details:</p>
+      <div class="book-info">
+        Title: <%= locals.title %><br />
+        Author: <%= locals.author %>
+      </div>
+      <p>Please visit your library or log in to your account to borrow this book.</p>
+      <p>If you no longer wish to borrow this book, please ignore this email.</p>
+      <div class="footer">Booklend API</div>
+    </div>
+  </body>
+</html>

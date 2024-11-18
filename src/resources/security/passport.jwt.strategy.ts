@@ -12,7 +12,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       // 쿠키에서 token 추출
       // ExtractJwt.fromAuthHeaderAsBearerToken() -> Request에서 JWT를 Header에 Bearer Token에서 추출
-      jwtFromRequest: ExtractJwt.fromExtractors([(req: Request) => req?.cookies?.AuthToken]),
+      jwtFromRequest: ExtractJwt.fromExtractors([(req: Request) => req?.signedCookies?.jwt]),
       ignoreExpiration: true, // 만료 무시?
       secretOrKey: 'SECRET_KEY', // .env
     });
@@ -24,6 +24,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!user) {
       // 토큰오류, 만료
       return done(new UnauthorizedException({ message: 'User does not exist (๑•᎑<๑)ｰ☆' }), false);
+    }
+    if (user.verification !== 'verified') {
+      return done(new UnauthorizedException({ message: 'Need to verify (๑•᎑<๑)ｰ☆' }), false);
     }
     delete user.password;
     return done(null, user); // 이 user 객체가 request.user에 들어감

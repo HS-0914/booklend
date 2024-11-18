@@ -1,22 +1,19 @@
-version: '3.9' # 실행시 참고할 도커 컴포즈 문서의 버전
+# version: '3.9' 이제 compose에서 버전을 지정하지 않음
 
 # services: 실행할 서비스들을 정의
 services:
   app:
+    container_name: booklend_app
     build: . # Dockerfile이 있는 경로 (절대경로 또는 상대경로) # 현재 디렉토리의 도커파일 빌드
-    # container_name: app # 컨테이너 이름(유저 작명)
-    container_name: nestjs-app
     env_file: # .env 파일을 지정하여 환경 변수를 로드
-      - .env
+      - .env.development
+      # - .env.production
     ports:
       - '8000:8000'
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     command: npm run start:dev
-
-    environment: # 컨테이너 내에서 사용할 환경 변수를 정의(processs.env)
-      - CHOKIDAR_USEPOLLING=true # hotreload
 
     depends_on:
       - db
@@ -25,10 +22,10 @@ services:
 
   # db: 데이터베이스(사용자 작명)
   db:
+    container_name: db
     image: postgres:alpine
     # 빌드 실행 시 자동 재시작
     restart: always
-    container_name: postgres-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 3527
@@ -37,16 +34,16 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./db/csv/:/var/lib/postgresql/
-      - ./db/init/:/docker-entrypoint-initdb.d/
+      - db_data:/var/lib/postgresql/data
+      - ./src/resources/db/csv/:/var/lib/postgresql/
+      - ./src/resources/db/init/:/docker-entrypoint-initdb.d/
 
       # 프로덕션 환경에서는 보통 이름이 지정된 볼륨(Named Volume)을 사용하여 Docker가 데이터를 안정적으로 관리하게 하는 것이 일반적
       # 개발 환경에서는 바인드 마운트(Bind Mount)를 사용하여 코드와 데이터를 쉽게 접근하고 수정할 수 있도록 설정하는 것이 유리
 
   redis:
+    container_name: redis
     image: redis:alpine
-    container_name: redis-cache
     ports:
       - '6379:6379'
     command: redis-server
@@ -54,8 +51,8 @@ services:
       - redis_data:/data
 
   kafka:
-    image: bitnami/kafka:latest
     container_name: kafka
+    image: bitnami/kafka:latest
     ports:
       - '9092:9092'
     volumes:
@@ -88,7 +85,7 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
 
 volumes:
-  postgres_data:
+  db_data:
   redis_data:
   kafka_data:
 # 도커 에러 - https://stackoverflow.com/questions/65272764/ports-are-not-available-listen-tcp-0-0-0-0-50070-bind-an-attempt-was-made-to

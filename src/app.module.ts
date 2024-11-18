@@ -9,6 +9,9 @@ import { ReservationModule } from './reservation/reservation.module';
 import { NotificationModule } from './notification/notification.module';
 import { ConfigModule } from '@nestjs/config';
 import { RedisModule } from '@nestjs-modules/ioredis';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
+import { KafkaConfigService } from './kafka.config';
 
 @Module({
   imports: [
@@ -26,6 +29,26 @@ import { RedisModule } from '@nestjs-modules/ioredis';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    MailerModule.forRoot({
+      transport: {
+        host: process.env.SMTP_HOST,
+        port: process.env.SMTP_PORT,
+        auth: {
+          user: process.env.SMTP_EMAIL,
+          pass: process.env.SMTP_PASS,
+        },
+      },
+      defaults: {
+        from: `"booklend" <${process.env.SMTP_EMAIL}>`,
+      },
+      template: {
+        dir: __dirname + '/resources/templates',
+        adapter: new EjsAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    }),
     UserModule,
     BookModule,
     LoanModule,
@@ -33,6 +56,7 @@ import { RedisModule } from '@nestjs-modules/ioredis';
     NotificationModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, KafkaConfigService],
+  exports: [MailerModule],
 })
 export class AppModule {}

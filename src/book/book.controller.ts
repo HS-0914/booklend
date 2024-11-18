@@ -19,6 +19,7 @@ import { Book } from '../resources/db/domain/book.entity';
 import { RoleType } from 'src/resources/types/role.type';
 import { Roles } from 'src/resources/types/role.decorator';
 import { RolesGuard } from 'src/resources/security/role.guard';
+import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('book')
 export class BookController {
@@ -26,6 +27,9 @@ export class BookController {
 
   // 도서 추가
   @Post('/add')
+  @ApiOperation({ summary: '도서 추가' })
+  @ApiResponse({ status: 201, type: Book })
+  @ApiBody({ type: BookDTO })
   @UseGuards(UserGuard, RolesGuard)
   @Roles(RoleType.ADMIN)
   @UsePipes(ValidationPipe)
@@ -36,8 +40,7 @@ export class BookController {
   // 도서 검색
   @Get('/search')
   async searchBook(@Query('type') type: string | null, @Query('search') search: string): Promise<Book[]> {
-    const result = type ? await this.bookService.findByType(type, search) : await this.bookService.findAllType(search);
-    return result;
+    return type ? await this.bookService.findByType(type, search) : await this.bookService.findAllType(search);
   }
 
   // 도서 상세 검색

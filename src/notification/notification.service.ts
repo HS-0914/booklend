@@ -36,7 +36,7 @@ export class NotificationService {
    * 알림 삭제
    * @param id
    */
-  async deleteNotification(id: number): Promise<any> {
+  async deleteNotification(id: number) {
     return await this.notifyRepository.delete({ id: id });
   }
 }

@@ -2,13 +2,16 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Base } from './base.entity';
 import { User } from './user.entity';
 import { Book } from './book.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('reservations')
 export class Reservation extends Base {
+  @ApiProperty()
   @Column({ type: 'date' })
   reservation_date: Date; // 도서가 예약된 일자
 
   // (예: `pending`, `notified`, `completed`, `canceled`)
+  @ApiProperty()
   @Column({ default: 'pending' })
   status: string;
   @ManyToOne(() => User, (user) => user.id)

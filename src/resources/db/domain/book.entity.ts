@@ -1,6 +1,7 @@
 import { Column, Entity } from 'typeorm';
 import { Base } from './base.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { BookStatusType } from 'src/resources/types/book.type';
 
 @Entity('books')
 export class Book extends Base {
@@ -34,7 +35,7 @@ export class Book extends Base {
   kdc: string;
 
   // (`available`, `borrowed`, `reserved`)
-  @ApiProperty()
+  @ApiProperty({ enum: BookStatusType })
   @Column({ default: 'available' })
-  status: string;
+  status: BookStatusType;
 }

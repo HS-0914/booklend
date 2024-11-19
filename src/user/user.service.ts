@@ -16,7 +16,7 @@ export class UserService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    this.createAdmin();
+    await this.createAdmin();
   }
 
   private async createAdmin() {
@@ -55,7 +55,6 @@ export class UserService implements OnModuleInit {
   }
 
   private async sendMail(newuserDTO: CreateUserDTO) {
-    console.log(__dirname);
     await this.mail.sendMail({
       to: newuserDTO.email,
       subject: '이메일 인증',

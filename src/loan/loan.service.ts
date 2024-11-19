@@ -5,6 +5,7 @@ import { Loan } from '../resources/db/domain/loan.entity';
 import { Repository } from 'typeorm';
 import { KafkaProducerService } from './kafka.producer.service';
 import { Reservation } from '../resources/db/domain/reservation.entity';
+import { BookStatusType } from 'src/resources/types/book.type';
 
 @Injectable()
 export class LoanService {
@@ -42,7 +43,7 @@ export class LoanService {
       await this.reservRepository.update({ id: resv.id }, resv);
     }
     // 책 상태 변경 (대출가능 => 대출중)
-    bookAvail.status = 'borrowed';
+    bookAvail.status = BookStatusType.BORROWED;
     await this.bookRepository.update({ id: bookAvail.id }, bookAvail);
 
     // loan 데이터 추가
@@ -102,7 +103,8 @@ export class LoanService {
       order: { created_at: 'ASC' },
       relations: ['book', 'user'],
     });
-    loan.book.status = resv ? 'reserved' : 'available';
+    // loan.book.status = resv ? 'reserved' : 'available';
+    loan.book.status = resv ? BookStatusType.RESERVED : BookStatusType.AVAILABLE;
 
     loan = await this.loanRepository.save(loan);
     await this.bookRepository.update({ id: loan.book.id }, loan.book);

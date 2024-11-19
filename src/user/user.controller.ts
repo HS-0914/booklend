@@ -11,6 +11,7 @@ import { RoleType } from 'src/resources/types/role.type';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from 'src/resources/db/domain/user.entity';
 import { UpdateResult } from 'typeorm';
+import { plainToInstance } from 'class-transformer';
 
 @Controller('user')
 @ApiTags('유저 API')
@@ -23,11 +24,10 @@ export class UserController {
   // 회원 가입
   @ApiOperation({ summary: '회원 가입' })
   @ApiResponse({ status: 201, type: CreateUserDTO })
-  @ApiBody({ type: CreateUserDTO })
   @Post('/register')
   @UsePipes(ValidationPipe)
   async registerAccount(@Body() userDTO: CreateUserDTO): Promise<CreateUserDTO> {
-    return await this.userService.registerUser(userDTO);
+    return plainToInstance(CreateUserDTO, await this.userService.registerUser(userDTO));
   }
 
   // 회원 인증
@@ -40,7 +40,6 @@ export class UserController {
       },
     },
   })
-  @ApiBody({ type: VerifyUserDTO })
   @Post('/verify')
   @UsePipes(ValidationPipe)
   async verifyUser(@Body() userDTO: VerifyUserDTO, @Res() res: Response) {
@@ -68,7 +67,6 @@ export class UserController {
       },
     },
   })
-  @ApiBody({ type: UserDTO })
   @Post('/login')
   @UsePipes(ValidationPipe)
   async login(@Body() userDTO: UserDTO, @Res() res: Response): Promise<any> {
@@ -91,7 +89,7 @@ export class UserController {
   // 회원 정보 조회
   @Get('/profile')
   @ApiOperation({ summary: '회원 정보 조회' })
-  @ApiResponse({ type: User })
+  @ApiResponse({ status: 200, type: User })
   @UseGuards(UserGuard, RolesGuard)
   @Roles(RoleType.USER)
   getProfile(@Req() req: Request, @Res() res: Response): any {
@@ -101,7 +99,6 @@ export class UserController {
   // 회원 정보 수정
   @Put('/profile')
   @ApiOperation({ summary: '회원 정보 수정' })
-  @ApiResponse({ type: UpdateResult })
   @UseGuards(UserGuard, RolesGuard)
   @UsePipes(ValidationPipe)
   @Roles(RoleType.USER)
@@ -112,7 +109,6 @@ export class UserController {
   // 권한 관리
   @Put('/role')
   @ApiOperation({ summary: '권한 관리' })
-  @ApiResponse({ type: UpdateResult })
   @UseGuards(UserGuard, RolesGuard)
   @UsePipes(ValidationPipe)
   @Roles(RoleType.ROOT)

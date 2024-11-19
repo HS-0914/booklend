@@ -1,10 +1,11 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from '../resources/db/domain/book.entity';
 import { Like, Repository } from 'typeorm';
-import { BookDTO } from './dto/book.dto';
+import { BookDTO, BookEditDTO } from './dto/book.dto';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import Redis from 'ioredis';
+import { SearchType } from 'src/resources/types/book.type';
 @Injectable()
 export class BookService {
   constructor(
@@ -51,7 +52,7 @@ export class BookService {
    * @param type
    * @param keyword
    */
-  async findByType(type: string, keyword: string): Promise<Book[]> {
+  async findByType(type: SearchType, keyword: string): Promise<Book[]> {
     return await this.bookRepository.find({ where: { [type]: Like(`%${keyword}%`) } });
   }
 
@@ -110,7 +111,7 @@ export class BookService {
    * @param id
    * @param bookDTO
    */
-  async updateBook(bookID: number, bookDTO: BookDTO): Promise<any> {
+  async updateBook(bookID: number, bookDTO: BookEditDTO): Promise<any> {
     return await this.bookRepository.update({ id: bookID }, bookDTO);
   }
 

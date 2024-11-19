@@ -1,26 +1,27 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
   Post,
+  Put,
   Query,
   UseGuards,
   UsePipes,
   ValidationPipe,
-  Put,
-  Delete,
 } from '@nestjs/common';
-import { UserGuard } from '../resources/security/user.guard';
-import { BookDTO, BookEditDTO } from './dto/book.dto';
-import { BookService } from './book.service';
-import { Book } from '../resources/db/domain/book.entity';
-import { RoleType } from 'src/resources/types/role.type';
-import { Roles } from 'src/resources/types/role.decorator';
-import { RolesGuard } from 'src/resources/security/role.guard';
 import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { SearchType } from 'src/resources/types/book.type';
+
+import { Book } from '../resources/db/domain/book.entity';
+import { RolesGuard } from '../resources/security/role.guard';
+import { UserGuard } from '../resources/security/user.guard';
+import { SearchType } from '../resources/types/book.type';
+import { Roles } from '../resources/types/role.decorator';
+import { RoleType } from '../resources/types/role.type';
+import { BookService } from './book.service';
+import { BookDTO, BookEditDTO } from './dto/book.dto';
 
 @Controller('book')
 export class BookController {

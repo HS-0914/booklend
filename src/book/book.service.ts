@@ -1,11 +1,14 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Book } from '../resources/db/domain/book.entity';
-import { Like, Repository } from 'typeorm';
-import { BookDTO, BookEditDTO } from './dto/book.dto';
 import { InjectRedis } from '@nestjs-modules/ioredis';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
 import Redis from 'ioredis';
-import { SearchType } from 'src/resources/types/book.type';
+import { Like, Repository } from 'typeorm';
+
+import { Book } from '../resources/db/domain/book.entity';
+import { SearchType } from '../resources/types/book.type';
+import { BookDTO, BookEditDTO } from './dto/book.dto';
+
 @Injectable()
 export class BookService {
   constructor(
@@ -13,6 +16,7 @@ export class BookService {
     private readonly bookRepository: Repository<Book>,
     @InjectRedis()
     private readonly redis: Redis,
+    private env: ConfigService,
   ) {}
 
   /**
@@ -69,7 +73,7 @@ export class BookService {
     }
     const findBook = await this.bookRepository.findOne({ where: { id: bookID } });
     const redisBook = JSON.stringify(findBook);
-    await this.redis.set(`book:${bookID}`, redisBook, 'EX', 300); // ex = 초, px = 밀리초
+    await this.redis.set(`book:${bookID}`, redisBook, 'EX', this.env.get('REDIS_EXPIRE')); // ex = 초, px = 밀리초
     await this.incrementBookScore(findBook);
     return findBook;
   }

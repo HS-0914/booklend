@@ -1,12 +1,13 @@
 import { Controller, Delete, Get, Param, Req, UseGuards } from '@nestjs/common';
-import { NotificationService } from './notification.service';
-import { UserGuard } from '../resources/security/user.guard';
-import { Request } from 'express';
-import { Notification } from '../resources/db/domain/notification.entity';
-import { RolesGuard } from 'src/resources/security/role.guard';
-import { RoleType } from 'src/resources/types/role.type';
-import { Roles } from 'src/resources/types/role.decorator';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Request } from 'express';
+
+import { Notification } from '../resources/db/domain/notification.entity';
+import { RolesGuard } from '../resources/security/role.guard';
+import { UserGuard } from '../resources/security/user.guard';
+import { Roles } from '../resources/types/role.decorator';
+import { RoleType } from '../resources/types/role.type';
+import { NotificationService } from './notification.service';
 
 @Controller('notification')
 export class NotificationController {

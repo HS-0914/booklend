@@ -1,6 +1,8 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { KafkaConfigService } from './kafka.config';
+import { Injectable } from '@nestjs/common';
 import { Admin } from 'kafkajs';
+
+import { KafkaConfigService } from './kafka.config';
+
 @Injectable()
 export class AppService {
   private admin: Admin;

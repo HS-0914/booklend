@@ -1,11 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BookStatusType } from 'src/resources/types/book.type';
+import { Repository } from 'typeorm';
+
 import { Book } from '../resources/db/domain/book.entity';
 import { Loan } from '../resources/db/domain/loan.entity';
-import { Repository } from 'typeorm';
-import { KafkaProducerService } from './kafka.producer.service';
 import { Reservation } from '../resources/db/domain/reservation.entity';
-import { BookStatusType } from 'src/resources/types/book.type';
+import { KafkaProducerService } from './kafka.producer.service';
 
 @Injectable()
 export class LoanService {

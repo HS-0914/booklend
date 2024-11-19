@@ -9,11 +9,11 @@ services:
       - .env.development
       # - .env.production
     ports:
-      - '8000:8000'
+      - '${PORT}:${PORT}'
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-    command: npm run start:dev
+    command: npm run start
 
     depends_on:
       - db
@@ -27,12 +27,12 @@ services:
     # 빌드 실행 시 자동 재시작
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 3527
-      POSTGRES_DB: booklend
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
       TZ: Asia/Seoul # 대한민국 시간대 설정
     ports:
-      - '5432:5432'
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./src/resources/db/csv/:/var/lib/postgresql/
@@ -45,16 +45,16 @@ services:
     container_name: redis
     image: redis:alpine
     ports:
-      - '6379:6379'
+      - '${REDIS_PORT}:${REDIS_PORT}'
     command: redis-server
     volumes:
       - redis_data:/data
 
   kafka:
     container_name: kafka
-    image: bitnami/kafka:latest
+    image: bitnami/kafka:3.9.0
     ports:
-      - '9092:9092'
+      - '${KAFKA_PORT}:${KAFKA_PORT}'
     volumes:
       - 'kafka_data:/data'
     environment:
@@ -74,7 +74,7 @@ services:
 
   kafka-ui:
     container_name: kafka-ui
-    image: provectuslabs/kafka-ui:latest
+    image: provectuslabs/kafka-ui:v0.7.2
     ports:
       - '8080:8080'
     depends_on:
@@ -82,7 +82,7 @@ services:
     environment:
       DYNAMIC_CONFIG_ENABLED: 'true'
       KAFKA_CLUSTERS_0_NAME: wizard_test
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: ${KAFKA_BROKERS}
 
 volumes:
   db_data:

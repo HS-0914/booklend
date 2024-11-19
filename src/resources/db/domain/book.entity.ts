@@ -1,7 +1,8 @@
-import { Column, Entity } from 'typeorm';
-import { Base } from './base.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { BookStatusType } from 'src/resources/types/book.type';
+import { Column, Entity } from 'typeorm';
+
+import { Base } from './base.entity';
 
 @Entity('books')
 export class Book extends Base {

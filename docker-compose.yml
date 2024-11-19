@@ -6,8 +6,8 @@ services:
     container_name: booklend_app
     build: . # Dockerfile이 있는 경로 (절대경로 또는 상대경로) # 현재 디렉토리의 도커파일 빌드
     env_file: # .env 파일을 지정하여 환경 변수를 로드
-      - .env.development
-      # - .env.production
+      # - .env.development
+      - .env.production
     ports:
       - '${PORT}:${PORT}'
     volumes:
@@ -25,7 +25,7 @@ services:
     container_name: db
     image: postgres:alpine
     # 빌드 실행 시 자동 재시작
-    restart: always
+    # restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

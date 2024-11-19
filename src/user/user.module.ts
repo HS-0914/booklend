@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -13,7 +13,7 @@ import { UserService } from './user.service';
   imports: [
     TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
-      imports: [ConfigService],
+      imports: [ConfigModule],
       useFactory: async (env: ConfigService) => ({
         secret: env.get<string>('JWT_SECRET'),
         signOptions: { expiresIn: env.get<string>('JWT_EXPIRE') }, // [zeit/ms](https://github.com/zeit/ms.js)."2 days", "10h", "7d", "30s", 120 = 120ms

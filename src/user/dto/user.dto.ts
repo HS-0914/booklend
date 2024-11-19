@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEmpty, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Exclude } from 'class-transformer';
+import { IsEmail, IsEmpty, IsNotEmpty, IsOptional, IsString, IsStrongPassword } from 'class-validator';
+import { RoleType } from 'src/resources/types/role.type';
 
 export class CreateUserDTO {
   @ApiProperty()
@@ -7,16 +9,23 @@ export class CreateUserDTO {
   @IsString()
   username: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'min length = 5' })
   @IsNotEmpty()
-  @IsString()
+  @IsStrongPassword({
+    minLength: 5,
+    minLowercase: 0,
+    minUppercase: 0,
+    minNumbers: 0,
+    minSymbols: 0,
+  })
   password: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'example@example.com' })
   @IsNotEmpty()
   @IsEmail()
   email: string;
 
+  @Exclude()
   @IsEmpty()
   verification: string;
 }
@@ -27,9 +36,15 @@ export class VerifyUserDTO {
   @IsString()
   username: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'min length = 5' })
   @IsNotEmpty()
-  @IsString()
+  @IsStrongPassword({
+    minLength: 5,
+    minLowercase: 0,
+    minUppercase: 0,
+    minNumbers: 0,
+    minSymbols: 0,
+  })
   password: string;
 
   @ApiProperty()
@@ -44,16 +59,21 @@ export class UserDTO {
   @IsString()
   username: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'min length = 5' })
   @IsNotEmpty()
-  @IsString()
+  @IsStrongPassword({
+    minLength: 5,
+    minLowercase: 0,
+    minUppercase: 0,
+    minNumbers: 0,
+    minSymbols: 0,
+  })
   password: string;
 
-  @ApiProperty({ description: 'optional', required: false })
+  @ApiProperty({ description: 'optional', required: false, enum: RoleType })
   @IsOptional() // Checks if given value is empty (=== null, === undefined) and if so, ignores all the validators on the property. | === '' 는 아닌듯
   @IsNotEmpty()
-  @IsEmail()
-  role: string;
+  role: RoleType;
 }
 
 export class EditUserDTO {
@@ -62,9 +82,15 @@ export class EditUserDTO {
   @IsString()
   username: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'min length = 5' })
   @IsNotEmpty()
-  @IsString()
+  @IsStrongPassword({
+    minLength: 5,
+    minLowercase: 0,
+    minUppercase: 0,
+    minNumbers: 0,
+    minSymbols: 0,
+  })
   password: string;
 
   @ApiProperty()

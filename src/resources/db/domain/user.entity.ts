@@ -1,22 +1,25 @@
-import { Column, Entity, OneToMany } from 'typeorm';
-import { Base } from './base.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
+import { Column, Entity } from 'typeorm';
+
+import { Base } from './base.entity';
 
 @Entity('users')
 export class User extends Base {
-  @Column()
   @ApiProperty()
+  @Column()
   username: string;
-  @Column()
   @ApiProperty()
+  @Column()
   email: string;
-  @Column()
   @ApiProperty()
-  password: string;
-  @Column({ default: 'user' })
-  @ApiProperty({ description: '권한', default: 'user' })
-  role: string;
+  @Exclude()
   @Column()
+  password: string;
+  @ApiProperty({ description: '권한', default: 'user' })
+  @Column({ default: 'user' })
+  role: string;
   @ApiProperty({ description: '인증여부' })
+  @Column()
   verification: string;
 }

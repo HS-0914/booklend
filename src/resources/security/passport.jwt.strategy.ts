@@ -1,20 +1,25 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy, VerifiedCallback } from 'passport-jwt';
-import { UserService } from '../../user/user.service';
-import { Payload } from './payload.interface';
 import { Request } from 'express';
+import { ExtractJwt, Strategy, VerifiedCallback } from 'passport-jwt';
+import { UserService } from 'src/user/user.service';
+
+import { Payload } from './payload.interface';
 
 // JWT 검증을 위한 Class 파일
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private userService: UserService) {
+  constructor(
+    private userService: UserService,
+    private env: ConfigService,
+  ) {
     super({
       // 쿠키에서 token 추출
       // ExtractJwt.fromAuthHeaderAsBearerToken() -> Request에서 JWT를 Header에 Bearer Token에서 추출
       jwtFromRequest: ExtractJwt.fromExtractors([(req: Request) => req?.signedCookies?.jwt]),
-      ignoreExpiration: true, // 만료 무시?
-      secretOrKey: 'SECRET_KEY', // .env
+      ignoreExpiration: false, // 만료 무시?
+      secretOrKey: env.get<string>('JWT_SECRET'), // .env
     });
   }
 

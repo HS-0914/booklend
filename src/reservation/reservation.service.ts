@@ -1,9 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Reservation } from '../resources/db/domain/reservation.entity';
 import { Repository } from 'typeorm';
+
 import { Book } from '../resources/db/domain/book.entity';
 import { Loan } from '../resources/db/domain/loan.entity';
+import { Reservation } from '../resources/db/domain/reservation.entity';
 
 @Injectable()
 export class ReservationService {

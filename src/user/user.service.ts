@@ -1,11 +1,13 @@
-import { HttpException, HttpStatus, Injectable, OnModuleInit, UnauthorizedException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../resources/db/domain/user.entity';
-import { FindOneOptions, Repository } from 'typeorm';
-import { CreateUserDTO, EditUserDTO, UserDTO, VerifyUserDTO } from './dto/user.dto';
-import * as bcrypt from 'bcrypt';
-import { Payload } from '../resources/security/payload.interface';
 import { MailerService } from '@nestjs-modules/mailer';
+import { HttpException, HttpStatus, Injectable, OnModuleInit, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
+import { FindOneOptions, Repository } from 'typeorm';
+
+import { User } from '../resources/db/domain/user.entity';
+import { Payload } from '../resources/security/payload.interface';
+import { CreateUserDTO, EditUserDTO, UserDTO, VerifyUserDTO } from './dto/user.dto';
 
 @Injectable()
 export class UserService implements OnModuleInit {
@@ -13,25 +15,26 @@ export class UserService implements OnModuleInit {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly mail: MailerService,
+    private env: ConfigService,
   ) {}
 
   async onModuleInit() {
-    this.createAdmin();
+    await this.createAdmin();
   }
 
   private async createAdmin() {
-    const username = process.env.ROOT_NAME;
+    const username = this.env.get<string>('ROOT_NAME');
     const user = await this.userRepository.findOne({
       where: { username: username },
     });
     if (!user) {
-      const password = await this.transformPw(process.env.ROOT_PASS);
+      const password = await this.transformPw(this.env.get<string>('ROOT_PASS'));
       const root = this.userRepository.create({
         id: 1,
         username,
-        email: process.env.ROOT_EMAIL,
+        email: this.env.get<string>('ROOT_EMAIL'),
         password,
-        role: process.env.ROOT_ROLE,
+        role: this.env.get<string>('ROOT_ROLE'),
         verification: 'verified',
       });
       await this.userRepository.save(root);
@@ -55,14 +58,12 @@ export class UserService implements OnModuleInit {
   }
 
   private async sendMail(newuserDTO: CreateUserDTO) {
-    console.log(__dirname);
     await this.mail.sendMail({
       to: newuserDTO.email,
       subject: '이메일 인증',
       template: './verification-email',
       context: {
         verificationCode: newuserDTO.verification,
-        // notification: JSON.stringify({ notification }),
       },
     });
   }

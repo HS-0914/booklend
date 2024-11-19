@@ -1,26 +1,32 @@
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import * as cookieParser from 'cookie-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
+
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const env = app.get(ConfigService);
+
   app.enableCors({
     origin: true, // 모든 접근 허용
     credentials: true, // 쿠키 사용
   });
-  app.use(cookieParser('SECRET_KEY'));
+  app.use(cookieParser(env.get<string>('COOKIE_SECRET')));
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Booklend API Docs')
     .setDescription('Booklend의 API 문서입니다.')
-    .setVersion('1.0')
+    .setVersion(env.get<string>('SWAGGER_VERSION'))
     .build();
   const docs = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api-docs', app, docs);
-  await app.listen(8000);
+
+  const port = env.get<number>('PORT');
+  await app.listen(port);
 }
 bootstrap();
 
 // https://velog.io/@kwontae1313/NestJS-CORS - nestjs cors 설정
-// https?
+// configuration - https://cdragon.tistory.com/entry/NestJS-Configuration-%EC%82%AC%EC%9A%A9%EB%B2%95

@@ -1,16 +1,18 @@
 import { Body, Controller, Get, Post, Put, Req, Res, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
-import { Response, Request } from 'express';
-import { UserService } from './user.service';
-import { CreateUserDTO, EditUserDTO, UserDTO, VerifyUserDTO } from './dto/user.dto';
-import { UserGuard } from '../resources/security/user.guard';
-import { Payload } from '../resources/security/payload.interface';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { plainToInstance } from 'class-transformer';
+import { Request, Response } from 'express';
+
+import { User } from '../resources/db/domain/user.entity';
+import { Payload } from '../resources/security/payload.interface';
 import { RolesGuard } from '../resources/security/role.guard';
+import { UserGuard } from '../resources/security/user.guard';
 import { Roles } from '../resources/types/role.decorator';
-import { RoleType } from 'src/resources/types/role.type';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from 'src/resources/db/domain/user.entity';
-import { UpdateResult } from 'typeorm';
+import { RoleType } from '../resources/types/role.type';
+import { CreateUserDTO, EditUserDTO, UserDTO, VerifyUserDTO } from './dto/user.dto';
+import { UserService } from './user.service';
 
 @Controller('user')
 @ApiTags('유저 API')
@@ -18,16 +20,16 @@ export class UserController {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    private env: ConfigService,
   ) {}
 
   // 회원 가입
   @ApiOperation({ summary: '회원 가입' })
   @ApiResponse({ status: 201, type: CreateUserDTO })
-  @ApiBody({ type: CreateUserDTO })
   @Post('/register')
   @UsePipes(ValidationPipe)
   async registerAccount(@Body() userDTO: CreateUserDTO): Promise<CreateUserDTO> {
-    return await this.userService.registerUser(userDTO);
+    return plainToInstance(CreateUserDTO, await this.userService.registerUser(userDTO));
   }
 
   // 회원 인증
@@ -40,7 +42,6 @@ export class UserController {
       },
     },
   })
-  @ApiBody({ type: VerifyUserDTO })
   @Post('/verify')
   @UsePipes(ValidationPipe)
   async verifyUser(@Body() userDTO: VerifyUserDTO, @Res() res: Response) {
@@ -51,7 +52,7 @@ export class UserController {
       res.cookie('jwt', accessToken, {
         signed: true,
         httpOnly: true, // xss 방지
-        maxAge: 3 * 60 * 1000, // 1000 ms
+        maxAge: this.env.get<number>('JWT_MAXAGE'),
         sameSite: 'strict', // CSRF 방지
       });
       return res.status(200).send({ accessToken });
@@ -68,7 +69,6 @@ export class UserController {
       },
     },
   })
-  @ApiBody({ type: UserDTO })
   @Post('/login')
   @UsePipes(ValidationPipe)
   async login(@Body() userDTO: UserDTO, @Res() res: Response): Promise<any> {
@@ -79,7 +79,7 @@ export class UserController {
       res.cookie('jwt', accessToken, {
         signed: true,
         httpOnly: true, // xss 방지
-        maxAge: 3 * 60 * 1000, // 1000 ms
+        maxAge: this.env.get<number>('JWT_MAXAGE'), // 1000 ms
         sameSite: 'strict', // CSRF 방지
       });
       return res.send({ accessToken: accessToken });
@@ -91,7 +91,7 @@ export class UserController {
   // 회원 정보 조회
   @Get('/profile')
   @ApiOperation({ summary: '회원 정보 조회' })
-  @ApiResponse({ type: User })
+  @ApiResponse({ status: 200, type: User })
   @UseGuards(UserGuard, RolesGuard)
   @Roles(RoleType.USER)
   getProfile(@Req() req: Request, @Res() res: Response): any {
@@ -101,7 +101,6 @@ export class UserController {
   // 회원 정보 수정
   @Put('/profile')
   @ApiOperation({ summary: '회원 정보 수정' })
-  @ApiResponse({ type: UpdateResult })
   @UseGuards(UserGuard, RolesGuard)
   @UsePipes(ValidationPipe)
   @Roles(RoleType.USER)
@@ -112,7 +111,6 @@ export class UserController {
   // 권한 관리
   @Put('/role')
   @ApiOperation({ summary: '권한 관리' })
-  @ApiResponse({ type: UpdateResult })
   @UseGuards(UserGuard, RolesGuard)
   @UsePipes(ValidationPipe)
   @Roles(RoleType.ROOT)
@@ -139,7 +137,7 @@ export class UserController {
   @UseGuards(UserGuard, RolesGuard)
   @Roles(RoleType.ADMIN)
   getCookies(@Req() req: Request, @Res() res: Response): any {
-    const jwt = req.cookies['AuthToken'];
+    const jwt = req.signedCookies['jwt'];
     return res.send(jwt);
   }
 }

@@ -1,53 +1,37 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from './user/user.module';
-import { BookModule } from './book/book.module';
-import { LoanModule } from './loan/loan.module';
-import { ReservationModule } from './reservation/reservation.module';
-import { NotificationModule } from './notification/notification.module';
-import { ConfigModule } from '@nestjs/config';
 import { RedisModule } from '@nestjs-modules/ioredis';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { BookModule } from './book/book.module';
 import { KafkaConfigService } from './kafka.config';
+import { LoanModule } from './loan/loan.module';
+import { NotificationModule } from './notification/notification.module';
+import { ReservationModule } from './reservation/reservation.module';
+import { mailerConfig } from './resources/config/mailer.config';
+import { ormConfig } from './resources/config/orm.config';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      url: process.env.DATABASE_URL,
-      autoLoadEntities: true,
-      entities: [__dirname + '/domain/*.entity.{ts,js}'],
-      synchronize: true,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
+    }),
+    TypeOrmModule.forRootAsync({
+      useFactory: (env: ConfigService) => ormConfig(env),
+      inject: [ConfigService],
     }),
     RedisModule.forRoot({
       type: 'single',
       url: process.env.REDIS_URL,
     }),
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-    MailerModule.forRoot({
-      transport: {
-        host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT,
-        auth: {
-          user: process.env.SMTP_EMAIL,
-          pass: process.env.SMTP_PASS,
-        },
-      },
-      defaults: {
-        from: `"booklend" <${process.env.SMTP_EMAIL}>`,
-      },
-      template: {
-        dir: __dirname + '/resources/templates',
-        adapter: new EjsAdapter(),
-        options: {
-          strict: true,
-        },
-      },
+    MailerModule.forRootAsync({
+      useFactory: (env: ConfigService) => mailerConfig(env),
+      inject: [ConfigService],
     }),
     UserModule,
     BookModule,

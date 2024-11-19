@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Notification } from '../resources/db/domain/notification.entity';
 import { Repository } from 'typeorm';
+
+import { Notification } from '../resources/db/domain/notification.entity';
 
 @Injectable()
 export class NotificationService {
@@ -36,7 +37,7 @@ export class NotificationService {
    * 알림 삭제
    * @param id
    */
-  async deleteNotification(id: number): Promise<any> {
+  async deleteNotification(id: number) {
     return await this.notifyRepository.delete({ id: id });
   }
 }

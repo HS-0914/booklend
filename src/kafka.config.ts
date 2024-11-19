@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Kafka } from 'kafkajs';
 
 @Injectable()
 export class KafkaConfigService {
   private kafka: Kafka;
-  constructor() {
+  constructor(env: ConfigService) {
     this.kafka = new Kafka({
-      clientId: 'booklend kafka',
-      brokers: ['kafka:9092'],
+      clientId: env.get<string>('KAFKA_CLIENTID'),
+      brokers: [env.get<string>('KAFKA_BROKERS')],
     });
   }
   getKafka(): Kafka {

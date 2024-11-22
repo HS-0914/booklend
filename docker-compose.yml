@@ -7,10 +7,11 @@ services:
     build: . # Dockerfile이 있는 경로 (절대경로 또는 상대경로) # 현재 디렉토리의 도커파일 빌드
     env_file: # .env 파일을 지정하여 환경 변수를 로드
       - .env.development
-      # - .env.production
+      # - .env
+    restart: always
     ports:
-      - '${PORT}:${PORT}'
-    volumes:
+      - '${PORT}:${PORT}' # 외부 포트 : 내부 포트
+    volumes: # 외부 경로 : 컨테이너 내부 경로
       - .:/usr/src/app
       - /usr/src/app/node_modules
     command: npm run start:dev
@@ -20,12 +21,11 @@ services:
       - redis
       - kafka
 
-  # db: 데이터베이스(사용자 작명)
   db:
     container_name: db
     image: postgres:alpine
     # 빌드 실행 시 자동 재시작
-    # restart: always
+    restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -44,6 +44,7 @@ services:
   redis:
     container_name: redis
     image: redis:alpine
+    restart: always
     ports:
       - '${REDIS_PORT}:${REDIS_PORT}'
     command: redis-server
@@ -53,6 +54,7 @@ services:
   kafka:
     container_name: kafka
     image: bitnami/kafka:3.9.0
+    restart: always
     ports:
       - '${KAFKA_PORT}:${KAFKA_PORT}'
     volumes:
@@ -73,6 +75,20 @@ services:
       # - ALLOW_PLAINTEXT_LISTENER=yes
       # KAFKA_KRAFT_CLUSTER_ID not set - If using multiple nodes then you must use the same Cluster ID for each one
       # Kafka has been configured with a PLAINTEXT listener, this setting is not recommended for production environments.
+
+  nginx:
+    container_name: nginx
+    image: nginx:1.27.2-alpine
+    restart: always
+    environment:
+      - TZ: Asia/Seoul
+      - PORT=${PORT}
+    ports:
+      - ${NGINX_PORT}:${NGINX_PORT}
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - booklend_app
 
 # 메모리 이슈
 # kafka-ui:

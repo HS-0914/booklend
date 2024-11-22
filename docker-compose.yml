@@ -6,8 +6,8 @@ services:
     container_name: booklend_app
     build: . # Dockerfile이 있는 경로 (절대경로 또는 상대경로) # 현재 디렉토리의 도커파일 빌드
     env_file: # .env 파일을 지정하여 환경 변수를 로드
-      - .env.development
-      # - .env
+      # - .env.development
+      - .env
     restart: always
     ports:
       - '${PORT}:${PORT}' # 외부 포트 : 내부 포트

@@ -13,7 +13,7 @@ NestJS 공부 목적을 위해 프로젝트를 진행하였습니다.
 
 서비스에 대한 api를 정리한 문서입니다. 
 
-booklend.p-e.kr/api-docs
+https://booklend.p-e.kr/api-docs
 
 
 도서DB에 대한 데이터는 도서관 정보나루(https://www.data4library.kr/openDataL) 에서

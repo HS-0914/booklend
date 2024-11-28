@@ -51,12 +51,12 @@ https://booklend.p-e.kr/api-docs
 Postman 같은 API 플랫폼을 통해서 API를 사용하는 것이 아닌 사용자가 직접 이용해볼 수 있는 간단한 웹사이트를 만들고자 합니다.
 
 
-# ERD 구조
+# :floppy_disk: ERD 구조
 
 ![Booklend](https://github.com/user-attachments/assets/cd212fae-b2ef-4a98-a444-9421445d6488)
 
 
-# 시스템 아키텍처
+# 🖥️ 시스템 아키텍처
 
 ![booklend](https://github.com/user-attachments/assets/ce5d8b9b-66d2-4a38-a4b8-feaebc89d2b4)
 

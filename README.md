@@ -63,4 +63,4 @@ Postman 같은 API 플랫폼을 통해서 API를 사용하는 것이 아닌 사�
 
 # 🔨 사용 기술
 
-- NestJS, PostgreSQL, KafkaJS, Redis, Docker
+- NestJS, PostgreSQL, KafkaJS, Redis, Docker, Nginx, Aws EC2

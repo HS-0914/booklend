@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { KafkaConfigService } from '../kafka.config';
+import { KafkaConfigService } from '../resources/config/kafka.config';
 import { Notification } from '../resources/db/domain/notification.entity';
 import { KafkaConsumerService } from './kafka.consumer.service';
 import { NotificationController } from './notification.controller';

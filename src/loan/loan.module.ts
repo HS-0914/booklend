@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { KafkaConfigService } from '../kafka.config';
+import { KafkaConfigService } from '../resources/config/kafka.config';
 import { Book } from '../resources/db/domain/book.entity';
 import { Loan } from '../resources/db/domain/loan.entity';
 import { Reservation } from '../resources/db/domain/reservation.entity';

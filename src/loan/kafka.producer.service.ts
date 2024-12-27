@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Producer } from 'kafkajs';
 
-import { KafkaConfigService } from '../kafka.config';
+import { KafkaConfigService } from '../resources/config/kafka.config';
 import { Reservation } from '../resources/db/domain/reservation.entity';
 
 @Injectable()

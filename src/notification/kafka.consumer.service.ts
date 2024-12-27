@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Consumer, EachMessagePayload } from 'kafkajs';
 import { Repository } from 'typeorm';
 
-import { KafkaConfigService } from '../kafka.config';
+import { KafkaConfigService } from '../resources/config/kafka.config';
 import { Notification } from '../resources/db/domain/notification.entity';
 import { Reservation } from '../resources/db/domain/reservation.entity';
 

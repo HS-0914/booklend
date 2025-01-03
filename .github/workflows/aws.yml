@@ -24,6 +24,7 @@ jobs:
             # GitHub Container Registry에 로그인
             echo ${{ secrets.GHCR_TOKEN }} | sudo docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
+            docker-compose down
             docker-compose up -d
 
             if [ ! -z "$IMAGE_ID" ]; then

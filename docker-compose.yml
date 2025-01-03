@@ -11,11 +11,13 @@ services:
     restart: always
     ports:
       - '${PORT}:${PORT}' # 외부 포트 : 내부 포트
+    networks:
+      - network-hs
     volumes: # 외부 경로 : 컨테이너 내부 경로
       - .:/usr/src/app
       - /usr/src/app/node_modules
     command: npm run start:dev
 
 networks:
-  hs-network:
+  network-hs:
     external: true

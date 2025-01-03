@@ -14,7 +14,12 @@ function ormConfig(env: ConfigService): TypeOrmModuleOptions {
 
   const ormconfig: TypeOrmModuleOptions = {
     type: 'postgres',
-    url: env.get<string>('DATABASE_URL'),
+    // url: env.get<string>('DATABASE_URL'),
+    host: env.get<string>('POSTGRES_HOST'),
+    port: env.get<number>('POSTGRES_PORT'),
+    username: env.get<string>('POSTGRES_USER'),
+    password: env.get<string>('POSTGRES_PASSWORD'),
+    database: env.get<string>('POSTGRES_DB'),
     entities: [__dirname + '/domain/*.entity.{ts,js}'],
     synchronize: env.get('DATABASE_SYNCRONIZE', { infer: true }),
     autoLoadEntities: true,

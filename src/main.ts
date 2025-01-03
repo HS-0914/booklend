@@ -25,7 +25,7 @@ async function bootstrap() {
 
   const port = env.get<number>('PORT');
   await app.listen(port);
-  console.log('run');
+  console.log('run...........');
 }
 bootstrap();
 

@@ -39,13 +39,11 @@ NestJS 공부 목적을 위해 프로젝트를 진행하였습니다.
 
 서비스에 대한 API를 정리한 문서입니다.
 
-https://booklend.p-e.kr/api-docs
+https://booklend.kro.kr/api-docs
 
 도서 DB에 대한 데이터는 도서관 정보나루(https://www.data4library.kr/openDataL) 에서
 
 인천광역시 교육청 부평도서관 장서/대출 데이터를 사용하였습니다.
-
-현재는 AWS EC2에 서비스를 올려 API를 사용할 수 있게 하였고 추후에는 CI/CD를 구성하거나
 
 Postman 같은 API 플랫폼을 통해서 API를 사용하는 것이 아닌 사용자가 직접 이용해볼 수 있는 간단한 웹사이트를 만들고자 합니다.
 

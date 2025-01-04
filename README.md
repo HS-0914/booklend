@@ -55,7 +55,8 @@ Postman 같은 API 플랫폼을 통해서 API를 사용하는 것이 아닌 사�
 
 # 🖥️ 시스템 구조
 
-![booklend](https://github.com/user-attachments/assets/ce5d8b9b-66d2-4a38-a4b8-feaebc89d2b4)
+![image](https://github.com/user-attachments/assets/faed1c58-91d1-4739-9d5e-9fabfc46b387)
+
 
 클라이언트 요청: 사용자 클라이언트가 웹 서버에 HTTP/HTTPS 요청을 보냅니다.
 
@@ -66,6 +67,8 @@ Postman 같은 API 플랫폼을 통해서 API를 사용하는 것이 아닌 사�
 데이터베이스 접근: 애플리케이션 서버가 데이터베이스 서버에 접근하여 필요한 데이터를 조회하거나 저장합니다.
 
 캐시 사용: 애플리케이션 서버가 자주 사용하는 데이터(도서 정보, 주간 인기 도서)는 캐시 서버에 저장하여 빠르게 접근합니다.
+
+CI / CD: Push될 때마다 빌드가 실행됩니다. 성공적으로 빌드가 마무리되면 AWS 환경에 배포됩니다.
 
 # 🔨 사용 기술
 

@@ -23,16 +23,15 @@ export class UserService implements OnModuleInit {
   }
 
   private async createAdmin() {
-    const username = this.env.get<string>('ROOT_NAME');
+    const email = this.env.get<string>('ROOT_EMAIL');
     const user = await this.userRepository.findOne({
-      where: { username: username },
+      where: { email: email },
     });
     if (!user) {
       const password = await this.transformPw(this.env.get<string>('ROOT_PASS'));
       const root = this.userRepository.create({
         id: 1,
-        username,
-        email: this.env.get<string>('ROOT_EMAIL'),
+        email,
         password,
         role: this.env.get<string>('ROOT_ROLE'),
         verification: 'verified',
@@ -44,12 +43,12 @@ export class UserService implements OnModuleInit {
 
   // 회원가입
   async registerUser(newuserDTO: CreateUserDTO): Promise<CreateUserDTO> {
-    // username or email 중복 걸러내기
+    // email 중복 걸러내기
     let userFind: User = await this.findByFields({
-      where: [{ username: newuserDTO.username }, { email: newuserDTO.email }],
+      where: { email: newuserDTO.email },
     });
     if (userFind) {
-      throw new HttpException('Username or Email aleady used (๑•᎑<๑)ｰ☆', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Email aleady used (๑•᎑<๑)ｰ☆', HttpStatus.BAD_REQUEST);
     }
     newuserDTO.password = await this.transformPw(newuserDTO.password);
     newuserDTO.verification = Math.floor(100000 + Math.random() * 900000).toString();
@@ -81,7 +80,7 @@ export class UserService implements OnModuleInit {
   // 유저 인증 + payload 만들어주기
   async validateUser(userDTO: UserDTO | VerifyUserDTO | EditUserDTO): Promise<Payload | undefined> {
     const userFind = await this.findByFields({
-      where: { username: userDTO.username },
+      where: { email: userDTO.email },
     });
     if (userFind.verification !== 'verified') {
       return undefined;
@@ -92,7 +91,7 @@ export class UserService implements OnModuleInit {
       throw new UnauthorizedException();
     }
 
-    const payload: Payload = { id: userFind.id, username: userFind.username, role: userFind.role };
+    const payload: Payload = { id: userFind.id, email: userFind.email, role: userFind.role };
     return payload;
   }
 
@@ -106,7 +105,7 @@ export class UserService implements OnModuleInit {
   // 인증코드 확인
   async vertifyUser(userDTO: VerifyUserDTO): Promise<Payload | undefined> {
     const userFind: User = await this.findByFields({
-      where: { username: userDTO.username },
+      where: { email: userDTO.email },
     });
     const validatePw = await bcrypt.compare(userDTO.password, userFind.password); // 값은 true or false
     if (!userFind || !validatePw) {
@@ -115,7 +114,7 @@ export class UserService implements OnModuleInit {
     }
 
     if (userDTO.verification === userFind.verification) {
-      await this.userRepository.update({ username: userFind.username }, { verification: 'verified' });
+      await this.userRepository.update({ email: userFind.email }, { verification: 'verified' });
       return await this.validateUser(userDTO);
     } else if (userFind.verification === 'verified') {
       throw new HttpException('already verified (๑•᎑<๑)ｰ☆', HttpStatus.BAD_REQUEST);
@@ -144,7 +143,7 @@ export class UserService implements OnModuleInit {
   // 회원 권한 수정
   async updateRole(userDTO: UserDTO) {
     return await this.userRepository.update(
-      { username: userDTO.username },
+      { email: userDTO.email },
       {
         role: userDTO.role,
       },

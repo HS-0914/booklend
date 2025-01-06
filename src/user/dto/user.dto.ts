@@ -4,10 +4,10 @@ import { IsEmail, IsEmpty, IsNotEmpty, IsOptional, IsString, IsStrongPassword } 
 import { RoleType } from 'src/resources/types/role.type';
 
 export class CreateUserDTO {
-  @ApiProperty()
+  @ApiProperty({ example: 'example@example.com' })
   @IsNotEmpty()
-  @IsString()
-  username: string;
+  @IsEmail()
+  email: string;
 
   @ApiProperty({ description: 'min length = 5' })
   @IsNotEmpty()
@@ -20,21 +20,16 @@ export class CreateUserDTO {
   })
   password: string;
 
-  @ApiProperty({ example: 'example@example.com' })
-  @IsNotEmpty()
-  @IsEmail()
-  email: string;
-
   @Exclude()
   @IsEmpty()
   verification: string;
 }
 
 export class VerifyUserDTO {
-  @ApiProperty()
+  @ApiProperty({ example: 'example@example.com' })
   @IsNotEmpty()
-  @IsString()
-  username: string;
+  @IsEmail()
+  email: string;
 
   @ApiProperty({ description: 'min length = 5' })
   @IsNotEmpty()
@@ -54,10 +49,10 @@ export class VerifyUserDTO {
 }
 
 export class UserDTO {
-  @ApiProperty()
+  @ApiProperty({ example: 'example@example.com' })
   @IsNotEmpty()
-  @IsString()
-  username: string;
+  @IsEmail()
+  email: string;
 
   @ApiProperty({ description: 'min length = 5' })
   @IsNotEmpty()
@@ -77,10 +72,10 @@ export class UserDTO {
 }
 
 export class EditUserDTO {
-  @ApiProperty()
+  @ApiProperty({ example: 'example@example.com' })
   @IsNotEmpty()
-  @IsString()
-  username: string;
+  @IsEmail()
+  email: string;
 
   @ApiProperty({ description: 'min length = 5' })
   @IsNotEmpty()

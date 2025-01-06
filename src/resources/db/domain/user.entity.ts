@@ -8,9 +8,6 @@ import { Base } from './base.entity';
 export class User extends Base {
   @ApiProperty()
   @Column()
-  username: string;
-  @ApiProperty()
-  @Column()
   email: string;
   @ApiProperty()
   @Exclude()

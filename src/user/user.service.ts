@@ -48,7 +48,7 @@ export class UserService implements OnModuleInit {
       where: { email: newuserDTO.email },
     });
     if (userFind) {
-      throw new HttpException('Email aleady used (๑•᎑<๑)ｰ☆', HttpStatus.BAD_REQUEST);
+      throw new HttpException('이미 사용중인 이메일입니다. (๑•᎑<๑)ｰ☆', HttpStatus.BAD_REQUEST);
     }
     newuserDTO.password = await this.transformPw(newuserDTO.password);
     newuserDTO.verification = Math.floor(100000 + Math.random() * 900000).toString();
@@ -117,9 +117,9 @@ export class UserService implements OnModuleInit {
       await this.userRepository.update({ email: userFind.email }, { verification: 'verified' });
       return await this.validateUser(userDTO);
     } else if (userFind.verification === 'verified') {
-      throw new HttpException('already verified (๑•᎑<๑)ｰ☆', HttpStatus.BAD_REQUEST);
+      throw new HttpException('이미 인증됐습니다. (๑•᎑<๑)ｰ☆', HttpStatus.BAD_REQUEST);
     } else {
-      throw new HttpException('code not match (๑•᎑<๑)ｰ☆', HttpStatus.BAD_REQUEST);
+      throw new HttpException('올바른 인증코드를 입력해주세요. (๑•᎑<๑)ｰ☆', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -127,7 +127,7 @@ export class UserService implements OnModuleInit {
   async updateUser(userDTO: EditUserDTO) {
     if (userDTO.password === userDTO.newPassword || userDTO.newPassword !== userDTO.checkNewPassword) {
       throw new HttpException(
-        'currentPW and newPW same or newPw and checkPw do not match! (๑•᎑<๑)ｰ☆',
+        '현재 비밀번호와 다르게 설정해야합니다. 비밀번호와 비밀번호 확인이 일치해야 합니다.(๑•᎑<๑)ｰ☆',
         HttpStatus.BAD_REQUEST,
       );
     }

@@ -84,7 +84,7 @@ export class UserController {
       });
       return res.send({ accessToken: accessToken });
     } else {
-      res.status(406).send({ msg: 'need to verify' });
+      res.status(401).send({ msg: 'need to verify' });
     }
   }
 

@@ -17,7 +17,7 @@ function mailerConfig(env: ConfigService): MailerOptions {
       from: `"booklend" <${env.get<string>('SMTP_EMAIL')}>`,
     },
     template: {
-      dir: join(__dirname + '../templates'),
+      dir: join(__dirname, '../templates'),
       adapter: new EjsAdapter(),
       options: {
         strict: true,

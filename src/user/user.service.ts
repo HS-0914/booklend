@@ -88,7 +88,10 @@ export class UserService implements OnModuleInit {
     const validatePw = await bcrypt.compare(userDTO.password, userFind.password); // 값은 true or false
     if (!userFind || !validatePw) {
       // 아이디 or 비번 틀림
-      throw new UnauthorizedException();
+      throw new HttpException(
+        '아이디 또는 비밀번호가 잘못 되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요. (๑•᎑<๑)ｰ☆',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     const payload: Payload = { id: userFind.id, email: userFind.email, role: userFind.role };

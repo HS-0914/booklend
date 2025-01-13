@@ -52,10 +52,10 @@ export class UserController {
       res.cookie('jwt', accessToken, {
         signed: true,
         httpOnly: true, // xss 방지
-        maxAge: this.env.get<number>('JWT_MAXAGE'),
+        maxAge: this.env.get<number>('COOKIE_MAXAGE'),
         sameSite: 'strict', // CSRF 방지
       });
-      return res.status(200).send({ accessToken });
+      return res.status(200).send({ accessToken, message: 'access' });
     }
   }
 
@@ -79,12 +79,12 @@ export class UserController {
       res.cookie('jwt', accessToken, {
         signed: true,
         httpOnly: true, // xss 방지
-        maxAge: this.env.get<number>('JWT_MAXAGE'), // 1000 ms
+        maxAge: this.env.get<number>('COOKIE_MAXAGE'), // 1000 ms
         sameSite: 'strict', // CSRF 방지
       });
-      return res.send({ accessToken: accessToken });
+      return res.send({ accessToken, message: 'access' });
     } else {
-      res.status(401).send({ msg: 'need to verify' });
+      res.status(401).send({ message: '이메일 인증이 필요합니다.' });
     }
   }
 

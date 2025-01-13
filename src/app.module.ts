@@ -28,6 +28,7 @@ import { UserModule } from './user/user.module';
     RedisModule.forRoot({
       type: 'single',
       url: process.env.REDIS_URL,
+      options: { connectTimeout: 10000 },
     }),
     MailerModule.forRootAsync({
       useFactory: (env: ConfigService) => mailerConfig(env),

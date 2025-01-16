@@ -53,9 +53,10 @@ export class UserController {
         signed: true,
         httpOnly: true, // xss 방지
         maxAge: this.env.get<number>('COOKIE_MAXAGE'),
-        sameSite: 'strict', // CSRF 방지
+        sameSite: 'none',
+        secure: true,
       });
-      return res.status(200).send({ accessToken, message: 'access' });
+      return res.send({ accessToken, message: 'access' });
     }
   }
 
@@ -80,7 +81,8 @@ export class UserController {
         signed: true,
         httpOnly: true, // xss 방지
         maxAge: this.env.get<number>('COOKIE_MAXAGE'), // 1000 ms
-        sameSite: 'strict', // CSRF 방지
+        sameSite: 'none',
+        secure: true,
       });
       return res.send({ accessToken, message: 'access' });
     } else {

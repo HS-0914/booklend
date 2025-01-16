@@ -90,7 +90,7 @@ export class UserService implements OnModuleInit {
       // 아이디 or 비번 틀림
       throw new HttpException(
         '아이디 또는 비밀번호가 잘못 되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요. (๑•᎑<๑)ｰ☆',
-        HttpStatus.UNAUTHORIZED,
+        HttpStatus.BAD_REQUEST,
       );
     }
 

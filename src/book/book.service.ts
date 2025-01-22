@@ -56,7 +56,7 @@ export class BookService {
    * @param type
    * @param keyword
    */
-  async findByType(type: SearchType, keyword: string): Promise<Book[]> {
+  async findByType(type: string, keyword: string): Promise<Book[]> {
     return await this.bookRepository.find({ where: { [type]: Like(`%${keyword}%`) } });
   }
 

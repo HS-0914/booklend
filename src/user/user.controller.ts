@@ -123,7 +123,7 @@ export class UserController {
 
   // 로그아웃
   @Post('/logout')
-  @ApiOperation({ summary: '권한 관리' })
+  @ApiOperation({ summary: '로그아웃' })
   @ApiResponse({
     status: 200,
     schema: { example: { message: 'success' } },

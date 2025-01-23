@@ -46,7 +46,7 @@ export class BookController {
   @ApiQuery({ name: 'search', description: '검색어' })
   async searchBook(@Query('type') type: string | null, @Query('search') search: string): Promise<Book[]> {
     return SearchType[type]
-      ? await this.bookService.findByType(type, search)
+      ? await this.bookService.findByType(SearchType[type], search)
       : await this.bookService.findAllType(search);
   }
 

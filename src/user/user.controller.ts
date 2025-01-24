@@ -128,10 +128,14 @@ export class UserController {
     schema: { example: { message: 'success' } },
   })
   logout(@Res() res: Response): any {
-    res.clearCookie('jwt');
-    return res.send({
-      message: 'success',
+    res.clearCookie('jwt', {
+      signed: true,
+      httpOnly: true, // xss 방지
+      maxAge: this.env.get<number>('COOKIE_MAXAGE'), // 1000 ms
+      sameSite: 'none',
+      secure: true,
     });
+    return res.status(204).send();
   }
 
   // 쿠키 테스트

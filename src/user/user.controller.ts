@@ -55,7 +55,6 @@ export class UserController {
         maxAge: this.env.get<number>('COOKIE_MAXAGE'),
         sameSite: 'none',
         secure: true,
-        domain: 'booklend-cli.vercel.app',
       });
       return res.send({ accessToken, message: 'access' });
     }

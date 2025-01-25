@@ -35,20 +35,21 @@ export class BookService {
    * 전체 검색
    * @param keyword
    */
-  async findAllType(keyword: string): Promise<Book[]> {
-    if (keyword) {
-      const bookFind = await this.bookRepository.find({
-        where: [
-          { title: Like(`%${keyword}%`) },
-          { author: Like(`%${keyword}%`) },
-          { isbn: keyword },
-          { publisher: Like(`%${keyword}%`) },
-        ],
-      });
-      return bookFind;
-    } else {
+  async findAllType(keyword: string, page: number): Promise<Book[]> {
+    if (!keyword) {
       throw new HttpException(`put some search words (๑•᎑<๑)ｰ☆`, HttpStatus.BAD_REQUEST);
     }
+    const bookFind = await this.bookRepository.find({
+      where: [
+        { title: Like(`%${keyword}%`) },
+        { author: Like(`%${keyword}%`) },
+        { isbn: keyword },
+        { publisher: Like(`%${keyword}%`) },
+      ],
+      take: 10,
+      skip: (page - 1) * 10,
+    });
+    return bookFind;
   }
 
   /**
@@ -56,8 +57,12 @@ export class BookService {
    * @param type
    * @param keyword
    */
-  async findByType(type: string, keyword: string): Promise<Book[]> {
-    return await this.bookRepository.find({ where: { [type]: Like(`%${keyword}%`) } });
+  async findByType(type: string, keyword: string, page: number): Promise<Book[]> {
+    return await this.bookRepository.find({
+      where: { [type]: Like(`%${keyword}%`) },
+      take: 10,
+      skip: (page - 1) * 10,
+    });
   }
 
   /**

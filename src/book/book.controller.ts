@@ -44,10 +44,14 @@ export class BookController {
   @ApiResponse({ status: 200, type: Book, isArray: true })
   @ApiQuery({ name: 'type', enum: SearchType, required: false, description: '검색 종류' })
   @ApiQuery({ name: 'search', description: '검색어' })
-  async searchBook(@Query('type') type: string | null, @Query('search') search: string): Promise<Book[]> {
+  async searchBook(
+    @Query('type') type: string | null,
+    @Query('search') search: string,
+    @Query('page') page: number,
+  ): Promise<Book[]> {
     return SearchType[type]
-      ? await this.bookService.findByType(SearchType[type], search)
-      : await this.bookService.findAllType(search);
+      ? await this.bookService.findByType(SearchType[type], search, page)
+      : await this.bookService.findAllType(search, page);
   }
 
   // 도서 상세 검색
